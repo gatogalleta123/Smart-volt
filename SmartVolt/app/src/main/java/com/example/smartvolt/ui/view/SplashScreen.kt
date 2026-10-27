@@ -14,12 +14,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.smartvolt.model.Destinos
-import com.example.smartvolt.ui.theme.AzulCorporativo
+import com.example.smartvolt.ui.theme.AmarilloPrincipal
 import com.example.smartvolt.ui.theme.SmartVoltGradients
 import com.example.smartvolt.ui.theme.TextoSobreAzul
 import kotlinx.coroutines.delay
@@ -47,28 +52,34 @@ fun SplashScreen(navController: NavController) {
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.padding(24.dp)
         ) {
+            // Logo SMART (blanco) + VOLT (amarillo)
             Text(
-                text = "SMARTVOLT",
-                fontSize = 36.sp,
-                color = TextoSobreAzul,
-                fontWeight = FontWeight.Bold
+                text = buildAnnotatedString {
+                    withStyle(SpanStyle(color = TextoSobreAzul)) { append("SMART") }
+                    withStyle(SpanStyle(color = AmarilloPrincipal)) { append("VOLT") }
+                },
+                fontSize = 44.sp,
+                fontWeight = FontWeight.ExtraBold
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(72.dp))
             Text(
-                text = "Bienvenido a smartvolt",
-                fontSize = 18.sp,
+                text = "Bienvenido a SmartVolt",
+                fontSize = 24.sp,
+                fontStyle = FontStyle.Italic,
+                textAlign = TextAlign.Center,
                 color = TextoSobreAzul
             )
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(72.dp))
             Text(
-                text = "Tu control de asistencia preferido",
-                fontSize = 14.sp,
+                text = "~Tu control de\nasistencia preferido~",
+                fontSize = 12.sp,
+                fontStyle = FontStyle.Italic,
+                textAlign = TextAlign.Center,
                 color = TextoSobreAzul.copy(alpha = 0.8f)
             )
+            // El mockup no muestra indicador de carga. Si lo quieren, descomenten:
             Spacer(modifier = Modifier.height(32.dp))
-            CircularProgressIndicator(
-                color = TextoSobreAzul
-            )
+            CircularProgressIndicator(color = TextoSobreAzul)
         }
     }
 }
