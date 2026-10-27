@@ -32,7 +32,7 @@ class MainActivity : ComponentActivity() {
                             SplashScreen(navController = navController)
                         }
                         composable(route = Destinos.Login.ruta) {
-                            LoginView()
+                            LoginView(navController)
                         }
                     }
                 }
