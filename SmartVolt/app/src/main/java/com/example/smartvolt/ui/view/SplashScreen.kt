@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.smartvolt.model.Destinos
 import com.example.smartvolt.ui.theme.AzulCorporativo
+import com.example.smartvolt.ui.theme.SmartVoltGradients
 import com.example.smartvolt.ui.theme.TextoSobreAzul
 import kotlinx.coroutines.delay
 
@@ -38,7 +39,7 @@ fun SplashScreen(navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = AzulCorporativo), // Color corporativo del proyecto
+            .background(brush = SmartVoltGradients.LoginBackground), // Color corporativo del proyecto
         contentAlignment = Alignment.Center
     ) {
         Column(
