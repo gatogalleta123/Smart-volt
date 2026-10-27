@@ -44,6 +44,10 @@ android {
 }
 
 dependencies {
+    // Rutas
+    val nav_version = "2.8.8"
+    implementation("androidx.navigation:navigation-compose:${nav_version}")
+
     // Android
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
