@@ -10,10 +10,11 @@ object SmartVoltGradients {
     // ========================================
 
     val LoginBackground = Brush.verticalGradient(
-        colors = listOf(
-            AzulElectrico,
-            AzulCorporativo,
-            AzulProfundo
+        colorStops = arrayOf(
+            0.00f to AzulBrillante,   // 007BFF
+            0.25f to AzulRey,         // 003F88
+            0.50f to AzulProfundo,    // 002258
+            1.00f to AzulMarino       // 001A37
         )
     )
 
