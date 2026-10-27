@@ -19,6 +19,8 @@ val AzulNoche = Color(0xFF000814)
 val AzulMarino = Color(0xFF001A37)
 val AzulProfundo = Color(0xFF002258)
 
+val AzulBrillante = Color(0xFF007BFF)
+val AzulRey = Color(0xFF003F88)
 val AzulCorporativo = Color(0xFF00509D)
 val AzulIntermedio = Color(0xFF0066CC)
 val AzulElectrico = Color(0xFF0878F9)
