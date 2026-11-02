@@ -42,6 +42,7 @@ val FondoClaro = Color(0xFFF5FAFF)
 
 val Superficie = Color(0xFFFFFFFF)
 val SuperficieSecundaria = Color(0xFFEDF3FA)
+val SuperficieOscura = Color(0xFF000000)
 
 val Borde = Color(0xFFC7D3E2)
 
