@@ -13,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.smartvolt.model.Destinos
 import com.example.smartvolt.ui.theme.SmartVoltTheme
 import com.example.smartvolt.ui.view.LoginView
+import com.example.smartvolt.ui.view.MainContainerView
 import com.example.smartvolt.ui.view.SplashScreen
 
 class MainActivity : ComponentActivity() {
@@ -33,6 +34,9 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(route = Destinos.Login.ruta) {
                             LoginView(navController)
+                        }
+                        composable (route = Destinos.Home.ruta) {
+                            MainContainerView()
                         }
                     }
                 }
