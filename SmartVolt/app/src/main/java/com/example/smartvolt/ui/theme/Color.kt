@@ -12,13 +12,15 @@ val Pink40 = Color(0xFF7D5260)
 
 
 // ========================================
-// COLORES PRINCIPALES
+// COLORES PRINCIPALES (degradado del diseño)
 // ========================================
 
-val AzulNoche = Color(0xFF000814)
-val AzulMarino = Color(0xFF001A37)
-val AzulProfundo = Color(0xFF002258)
+val AzulNoche = Color(0xFF000814)      // 100% del degradado (sin cambio)
+val AzulMarino = Color(0xFF001C47)     // 77%
+val AzulProfundo = Color(0xFF002965)   // 25%
+val AzulBase = Color(0xFF00317A)       // 0% (nuevo, el más claro del degradado)
 
+// Colores de acento (no aparecen en la imagen, se mantienen)
 val AzulBrillante = Color(0xFF007BFF)
 val AzulRey = Color(0xFF003F88)
 val AzulCorporativo = Color(0xFF00509D)
