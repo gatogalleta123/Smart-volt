@@ -34,10 +34,10 @@ fun EstadoConexionCard(
     modifier: Modifier = Modifier
 ) {
     // Definición condicional según los 2 estados del mockup
-    val colorFondo = SuperficieOscura
+    val colorFondo = if (estaConectado) Exito else Error
     val icono = if (estaConectado) Icons.Outlined.Wifi else Icons.Outlined.WifiOff
     val texto = if (estaConectado) "Estás conectado" else "No tienes conexión"
-    val colorIcono = if (estaConectado) Exito else Error
+    val colorIcono = Color.White
 
     Card(
         modifier = modifier.fillMaxWidth(),
