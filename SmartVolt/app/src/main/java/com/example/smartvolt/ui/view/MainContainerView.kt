@@ -20,6 +20,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.smartvolt.model.Destinos
 import com.example.smartvolt.model.destinosInferiores
 import com.example.smartvolt.ui.theme.FondoPrincipal
 import com.example.smartvolt.ui.theme.Superficie
@@ -65,11 +66,11 @@ fun MainContainerView() {
             startDestination = destinosInferiores.first().ruta,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable("inicio_usuario") { InicioUsuarioView() }
-            composable("calendario") { PantallaGenerica("Calendario") }
-            composable("marcaje") { PantallaGenerica("Marcaje") }
-            composable("perfil") { PantallaGenerica("Perfil") }
-            composable("menu") { PantallaGenerica("Menú") }
+            composable(Destinos.Inferior.InicioUsuario.ruta) { InicioUsuarioView() }
+            composable(Destinos.Inferior.Calendario.ruta) { PantallaGenerica("Calendario") }
+            composable(Destinos.Inferior.Marcaje.ruta) { PantallaGenerica("Marcaje") }
+            composable(Destinos.Inferior.Perfil.ruta) { PantallaGenerica("Perfil") }
+            composable(Destinos.Inferior.Menu.ruta) { PantallaGenerica("Menú") }
         }
     }
 }
