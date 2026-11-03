@@ -57,25 +57,25 @@ fun EstadoAsistenciaCard(
     estado: EstadoAsistencia = EstadoAsistencia.NO_REGISTRADO,
     modifier: Modifier = Modifier
 ) {
-    // Configuración dinámica de colores y texto según el estado solicitado
+    // 1. Usamos la nueva clase aquí para desestructurar las propiedades
     val (colorBarra, colorIconoRayo, colorTextoBarra, mensajeBarra) = when (estado) {
-        EstadoAsistencia.NO_REGISTRADO -> Quadruple(
-            first = AmarilloCalido,                             // Barra amarilla
-            second = Color.Gray.copy(alpha = 0.6f),             // Rayo pierde opacidad (gris)
-            third = TextoSobreAmarillo,                         // Texto oscuro
-            fourth = "¡Aún no marcas tu asistencia!"
+        EstadoAsistencia.NO_REGISTRADO -> CardStyleConfig(
+            colorBarra = AmarilloCalido,
+            colorIconoRayo = Color.Gray.copy(alpha = 0.6f),
+            colorTextoBarra = TextoSobreAmarillo,
+            mensajeBarra = "¡Aún no marcas tu asistencia!"
         )
-        EstadoAsistencia.REGISTRADO -> Quadruple(
-            first = AzulCorporativo,                            // Barra azul
-            second = AmarilloPrincipal,                         // Rayo retoma su amarillo original
-            third = TextoSobreAzul,                             // Texto blanco
-            fourth = "¡Asistencia registrada con éxito!"
+        EstadoAsistencia.REGISTRADO -> CardStyleConfig(
+            colorBarra = AzulCorporativo,
+            colorIconoRayo = AmarilloPrincipal,
+            colorTextoBarra = TextoSobreAzul,
+            mensajeBarra = "¡Asistencia registrada con éxito!"
         )
-        EstadoAsistencia.PENDIENTE_CONEXION -> Quadruple(
-            first = AzulCorporativo,                            // Barra azul (sin preocupación)
-            second = Color.LightGray.copy(alpha = 0.7f),        // Rayo opaco/gris
-            third = TextoSobreAzul,                             // Texto blanco
-            fourth = "Marca registrada sin conexión (pendiente)"
+        EstadoAsistencia.PENDIENTE_CONEXION -> CardStyleConfig(
+            colorBarra = AzulCorporativo,
+            colorIconoRayo = Color.LightGray.copy(alpha = 0.7f),
+            colorTextoBarra = TextoSobreAzul,
+            mensajeBarra = "Marca registrada sin conexión"
         )
     }
 
@@ -92,7 +92,6 @@ fun EstadoAsistenciaCard(
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            // Título de la tarjeta
             Text(
                 text = fechaTurno,
                 fontSize = 18.sp,
@@ -102,10 +101,7 @@ fun EstadoAsistenciaCard(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Fila central: Ícono de reloj + Horario de trabajo
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector = Icons.Outlined.Schedule,
                     contentDescription = "Horario de turno",
@@ -130,7 +126,6 @@ fun EstadoAsistenciaCard(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Barra / Contenedor inferior dinámico
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -143,7 +138,6 @@ fun EstadoAsistenciaCard(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start
                 ) {
-                    // Carga del vector bolt_vector.xml con el tinte dinámico
                     Icon(
                         painter = painterResource(id = R.drawable.bolt_vector),
                         contentDescription = "Ícono de estado",
@@ -163,12 +157,12 @@ fun EstadoAsistenciaCard(
     }
 }
 
-// Estructura auxiliar simple para retornar los 4 valores de estilo sin crear clases complejas
-private data class Quadruple<A, B, C, D>(
-    val first: A,
-    val second: B,
-    val third: C,
-    val fourth: D
+// 2. Definimos una clase con nombre representativo y legible
+private data class CardStyleConfig(
+    val colorBarra: Color,
+    val colorIconoRayo: Color,
+    val colorTextoBarra: Color,
+    val mensajeBarra: String
 )
 
 
