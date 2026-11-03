@@ -1,4 +1,4 @@
-package com.example.smartvolt.ui.components
+package com.example.smartvolt.ui.components.avisos
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

@@ -1,4 +1,4 @@
-package com.example.smartvolt.ui.components
+package com.example.smartvolt.ui.components.horasextra
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

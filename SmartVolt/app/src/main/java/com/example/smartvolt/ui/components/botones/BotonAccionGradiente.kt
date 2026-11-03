@@ -1,8 +1,9 @@
-package com.example.smartvolt.ui.components
+package com.example.smartvolt.ui.components.botones
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -72,7 +73,7 @@ fun BotonAccionGradiente(
 @Composable
 fun BotonesAccionPreview() {
     SmartVoltTheme(dynamicColor = false) {
-        androidx.compose.foundation.layout.Column(
+        Column(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {

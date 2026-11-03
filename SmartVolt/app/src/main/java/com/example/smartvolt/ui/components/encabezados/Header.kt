@@ -1,4 +1,4 @@
-package com.example.smartvolt.ui.components
+package com.example.smartvolt.ui.components.encabezados
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

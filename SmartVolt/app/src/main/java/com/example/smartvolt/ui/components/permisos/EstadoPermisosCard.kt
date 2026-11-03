@@ -1,4 +1,4 @@
-package com.example.smartvolt.ui.components
+package com.example.smartvolt.ui.components.permisos
 
 
 import androidx.compose.foundation.background

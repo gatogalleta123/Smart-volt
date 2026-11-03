@@ -1,4 +1,4 @@
-package com.example.smartvolt.ui.components
+package com.example.smartvolt.ui.components.horasextra
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
@@ -43,8 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.smartvolt.model.DetalleHorasExtra
 import com.example.smartvolt.model.EstadoMarca
-import com.example.smartvolt.model.RegistroMarca
-import com.example.smartvolt.model.TipoMarca
+import com.example.smartvolt.ui.components.asistencia.ItemMarcaAsistencia
 import com.example.smartvolt.ui.theme.Advertencia
 import com.example.smartvolt.ui.theme.AzulCorporativo
 import com.example.smartvolt.ui.theme.Borde
@@ -56,7 +55,7 @@ import com.example.smartvolt.ui.theme.TextoPrincipal
 import com.example.smartvolt.ui.theme.TextoSecundario
 
 @Composable
-fun ItemHorasExtrasDesplegable(
+fun ItemHorasExtraDesplegable(
     detalle: DetalleHorasExtra,
     modifier: Modifier = Modifier,
     inicialmenteExpandido: Boolean = false
@@ -214,7 +213,7 @@ fun ItemHorasExtrasDesplegable(
 @Composable
 fun ItemHorasExtrasColapsadoPreview() {
     SmartVoltTheme {
-        ItemHorasExtrasDesplegable(
+        ItemHorasExtraDesplegable(
             detalle = DetalleHorasExtra(
                 fecha = "23 de octubre",
                 horaEntrada = "17:30 p.m.",
@@ -232,7 +231,7 @@ fun ItemHorasExtrasColapsadoPreview() {
 @Composable
 fun ItemHorasExtrasDesplegadoPreview() {
     SmartVoltTheme {
-        ItemHorasExtrasDesplegable(
+        ItemHorasExtraDesplegable(
             detalle = DetalleHorasExtra(
                 fecha = "23 de octubre",
                 horaEntrada = "17:30 p.m.",
