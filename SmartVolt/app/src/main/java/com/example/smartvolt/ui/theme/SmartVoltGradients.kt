@@ -62,4 +62,24 @@ object SmartVoltGradients {
             AmarilloCalido
         )
     )
+
+    // ========================================
+    // TARJETA DE MARCAJE
+    // ========================================
+
+    // Online: azul noche (navy-900, 0%) -> azul brillante (blue-900, 100%)
+    val MarcajeOnline = Brush.verticalGradient(
+        colors = listOf(
+            AzulNoche,
+            AzulElectrico
+        )
+    )
+
+    // Sin conexión: dorado (gold-900, 0%) -> amarillo (gold-400, 100%)
+    val MarcajeOffline = Brush.verticalGradient(
+        colors = listOf(
+            AmarilloOro,
+            AmarilloPrincipal
+        )
+    )
 }

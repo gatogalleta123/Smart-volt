@@ -31,9 +31,9 @@ val AzulCeleste = Color(0xFF64D2FF)
 // ========================================
 // AMARILLOS
 // ========================================
-
 val AmarilloPrincipal = Color(0xFFFFD500)
 val AmarilloCalido = Color(0xFFFFC400)
+val AmarilloOro = Color(0xFFFFB300)   // NUEVO: inicio del degradado amarillo (gold-900)
 
 // ========================================
 // FONDOS Y SUPERFICIES

@@ -68,7 +68,7 @@ fun MainContainerView() {
         ) {
             composable(Destinos.Inferior.InicioUsuario.ruta) { InicioUsuarioView() }
             composable(Destinos.Inferior.Calendario.ruta) { PantallaGenerica("Calendario") }
-            composable(Destinos.Inferior.Marcaje.ruta) { PantallaGenerica("Marcaje") }
+            composable(Destinos.Inferior.Marcaje.ruta) { MarcajeView() }
             composable(Destinos.Inferior.Perfil.ruta) { PantallaGenerica("Perfil") }
             composable(Destinos.Inferior.Menu.ruta) { PantallaGenerica("Menú") }
         }
