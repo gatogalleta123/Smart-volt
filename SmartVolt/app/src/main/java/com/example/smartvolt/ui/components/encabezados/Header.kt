@@ -22,8 +22,9 @@ import com.example.smartvolt.ui.theme.TextoSobreAzul
 @Composable
 fun Header(
     saludo: String = "Hola Usuario!",
-    fecha: String = "Lunes 12 de octubre",
+    fecha: String? = "Lunes 12 de octubre",
     onClickNotificaciones: () -> Unit = {},
+    mostrarNotificaciones: Boolean = true,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -40,19 +41,23 @@ fun Header(
                 fontWeight = FontWeight.Bold,
                 color = TextoSobreAzul
             )
-            Text(
-                text = fecha,
-                fontSize = 14.sp,
-                color = TextoSobreAzul.copy(alpha = 0.85f)
-            )
+            if (fecha != null) {
+                Text(
+                    text = fecha,
+                    fontSize = 14.sp,
+                    color = TextoSobreAzul.copy(alpha = 0.85f)
+                )
+            }
         }
-        IconButton(onClick = onClickNotificaciones) {
-            Icon(
-                imageVector = Icons.Outlined.Notifications,
-                contentDescription = "Notificaciones",
-                tint = TextoSobreAzul,
-                modifier = Modifier.size(36.dp)
-            )
+        if (mostrarNotificaciones) {
+            IconButton(onClick = onClickNotificaciones) {
+                Icon(
+                    imageVector = Icons.Outlined.Notifications,
+                    contentDescription = "Notificaciones",
+                    tint = TextoSobreAzul,
+                    modifier = Modifier.size(36.dp)
+                )
+            }
         }
     }
 }
