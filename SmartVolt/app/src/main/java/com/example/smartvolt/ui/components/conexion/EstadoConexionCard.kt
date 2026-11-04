@@ -1,4 +1,4 @@
-package com.example.smartvolt.ui.components
+package com.example.smartvolt.ui.components.conexion
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.sp
 import com.example.smartvolt.ui.theme.Error
 import com.example.smartvolt.ui.theme.Exito
 import com.example.smartvolt.ui.theme.SmartVoltTheme
-import com.example.smartvolt.ui.theme.SuperficieOscura
 
 @Composable
 fun EstadoConexionCard(

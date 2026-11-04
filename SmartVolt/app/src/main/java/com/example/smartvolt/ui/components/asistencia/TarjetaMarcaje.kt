@@ -1,4 +1,4 @@
-package com.example.smartvolt.ui.components
+package com.example.smartvolt.ui.components.asistencia
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

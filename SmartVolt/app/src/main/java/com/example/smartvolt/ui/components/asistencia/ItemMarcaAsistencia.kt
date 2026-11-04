@@ -1,4 +1,4 @@
-package com.example.smartvolt.ui.components
+package com.example.smartvolt.ui.components.asistencia
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -22,7 +22,6 @@ import androidx.compose.material.icons.outlined.TimerOff
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -47,8 +46,6 @@ import com.example.smartvolt.ui.theme.FondoAdvertencia
 import com.example.smartvolt.ui.theme.FondoExito
 import com.example.smartvolt.ui.theme.SmartVoltTheme
 import com.example.smartvolt.ui.theme.Superficie
-import com.example.smartvolt.ui.theme.TextoPrincipal
-import com.example.smartvolt.ui.theme.TextoSecundario
 import com.example.smartvolt.ui.theme.TextoSobreAzul
 
 @Composable
