@@ -83,4 +83,7 @@ dependencies {
     // Herramientas de desarrollo
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+    // DataStore (preferencias / sesión)
+    implementation("androidx.datastore:datastore-preferences:1.1.2")
 }
