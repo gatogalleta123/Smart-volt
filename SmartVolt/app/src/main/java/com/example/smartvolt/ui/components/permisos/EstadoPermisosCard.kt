@@ -34,7 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.smartvolt.model.EstadoPermisos
+import com.example.smartvolt.model.domain.EstadoPermisos
 import com.example.smartvolt.ui.theme.Advertencia
 import com.example.smartvolt.ui.theme.AzulCorporativo
 import com.example.smartvolt.ui.theme.Borde

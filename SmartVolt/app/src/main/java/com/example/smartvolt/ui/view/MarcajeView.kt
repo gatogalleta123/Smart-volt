@@ -23,10 +23,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.smartvolt.model.EstadoMarca
-import com.example.smartvolt.model.EstadoVerificacion
-import com.example.smartvolt.model.RegistroMarca
-import com.example.smartvolt.model.TipoMarca
+import com.example.smartvolt.model.domain.EstadoMarca
+import com.example.smartvolt.model.domain.EstadoVerificacion
+import com.example.smartvolt.model.domain.RegistroMarca
+import com.example.smartvolt.model.domain.TipoMarca
 import com.example.smartvolt.ui.components.botones.BotonAccionGradiente
 import com.example.smartvolt.ui.components.conexion.EstadoConexionCard
 import com.example.smartvolt.ui.components.conexion.FaenaActualCard

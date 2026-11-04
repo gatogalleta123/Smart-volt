@@ -11,7 +11,6 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
@@ -20,8 +19,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.smartvolt.model.Destinos
-import com.example.smartvolt.model.destinosInferiores
+import com.example.smartvolt.model.navigation.Destinos
+import com.example.smartvolt.model.navigation.destinosInferiores
 import com.example.smartvolt.ui.theme.FondoPrincipal
 import com.example.smartvolt.ui.theme.Superficie
 import com.example.smartvolt.ui.theme.TextoPrincipal

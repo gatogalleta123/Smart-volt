@@ -1,11 +1,11 @@
-package com.example.smartvolt.model
+package com.example.smartvolt.model.local.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.smartvolt.model.MarcaDao
-import com.example.smartvolt.model.MarcaEntity
+import com.example.smartvolt.model.local.dao.MarcaDao
+import com.example.smartvolt.model.local.entity.MarcaEntity
 
 @Database(entities = [MarcaEntity::class], version = 1, exportSchema = false)
 abstract class SmartVoltDatabase : RoomDatabase() {

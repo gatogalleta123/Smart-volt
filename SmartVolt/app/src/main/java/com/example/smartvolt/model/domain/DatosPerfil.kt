@@ -1,4 +1,4 @@
-package com.example.smartvolt.model
+package com.example.smartvolt.model.domain
 
 /**
  * Datos personales que se muestran en el perfil (solo lectura).

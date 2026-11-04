@@ -1,4 +1,4 @@
-package com.example.smartvolt.model
+package com.example.smartvolt.model.local.preferences
 
 import android.content.Context
 import androidx.datastore.core.DataStore

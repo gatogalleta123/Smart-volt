@@ -1,4 +1,4 @@
-package com.example.smartvolt.model
+package com.example.smartvolt.model.domain
 
 /**
  * Representa el estado actual de los permisos y sensores requeridos por la app

@@ -26,7 +26,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.smartvolt.model.DatosPerfil
+import com.example.smartvolt.model.domain.DatosPerfil
 import com.example.smartvolt.ui.components.encabezados.Header
 import com.example.smartvolt.ui.components.perfil.AvatarPerfil
 import com.example.smartvolt.ui.components.perfil.CampoDatoPerfil

@@ -34,7 +34,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.smartvolt.model.Destinos
+import com.example.smartvolt.model.navigation.Destinos
 import com.example.smartvolt.ui.theme.AmarilloPrincipal
 import com.example.smartvolt.ui.theme.SmartVoltGradients
 import com.example.smartvolt.ui.theme.Superficie

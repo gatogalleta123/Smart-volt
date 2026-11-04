@@ -41,8 +41,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.smartvolt.model.DetalleHorasExtra
-import com.example.smartvolt.model.EstadoMarca
+import com.example.smartvolt.model.domain.DetalleHorasExtra
+import com.example.smartvolt.model.domain.EstadoMarca
 import com.example.smartvolt.ui.components.asistencia.ItemMarcaAsistencia
 import com.example.smartvolt.ui.theme.Advertencia
 import com.example.smartvolt.ui.theme.AzulCorporativo

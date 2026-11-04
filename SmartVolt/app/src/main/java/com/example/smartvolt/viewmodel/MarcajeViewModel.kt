@@ -3,10 +3,10 @@ package com.example.smartvolt.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.smartvolt.model.SmartVoltDatabase
-import com.example.smartvolt.model.MarcaRepository
-import com.example.smartvolt.model.RegistroMarca
-import com.example.smartvolt.model.TipoMarca
+import com.example.smartvolt.model.local.database.SmartVoltDatabase
+import com.example.smartvolt.model.repository.MarcaRepository
+import com.example.smartvolt.model.domain.RegistroMarca
+import com.example.smartvolt.model.domain.TipoMarca
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

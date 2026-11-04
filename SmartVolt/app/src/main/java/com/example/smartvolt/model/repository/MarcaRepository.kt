@@ -1,16 +1,16 @@
-package com.example.smartvolt.model
+package com.example.smartvolt.model.repository
 
-
-import com.example.smartvolt.model.MarcaDao
-import com.example.smartvolt.model.MarcaEntity
-import com.example.smartvolt.model.toEntity
-import com.example.smartvolt.model.toModel
-import com.example.smartvolt.model.EstadoMarca
-import com.example.smartvolt.model.RegistroMarca
-import com.example.smartvolt.model.TipoMarca
+import com.example.smartvolt.model.domain.EstadoMarca
+import com.example.smartvolt.model.domain.RegistroMarca
+import com.example.smartvolt.model.domain.TipoMarca
+import com.example.smartvolt.model.local.dao.MarcaDao
+import com.example.smartvolt.model.local.entity.MarcaEntity
+import com.example.smartvolt.model.local.entity.toEntity
+import com.example.smartvolt.model.local.entity.toModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID
+import kotlin.collections.forEach
 
 class MarcaRepository(private val dao: MarcaDao) {
 

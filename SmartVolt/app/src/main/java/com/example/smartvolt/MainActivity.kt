@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.smartvolt.model.Destinos
+import com.example.smartvolt.model.navigation.Destinos
 import com.example.smartvolt.ui.theme.SmartVoltTheme
 import com.example.smartvolt.ui.view.LoginView
 import com.example.smartvolt.ui.view.MainContainerView

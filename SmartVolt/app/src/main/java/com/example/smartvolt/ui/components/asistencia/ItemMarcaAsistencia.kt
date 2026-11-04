@@ -35,9 +35,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.smartvolt.R
-import com.example.smartvolt.model.EstadoMarca
-import com.example.smartvolt.model.RegistroMarca
-import com.example.smartvolt.model.TipoMarca
+import com.example.smartvolt.model.domain.EstadoMarca
+import com.example.smartvolt.model.domain.RegistroMarca
+import com.example.smartvolt.model.domain.TipoMarca
 import com.example.smartvolt.ui.theme.Advertencia
 import com.example.smartvolt.ui.theme.AmarilloPrincipal
 import com.example.smartvolt.ui.theme.AzulCorporativo

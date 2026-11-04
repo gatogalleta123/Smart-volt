@@ -1,12 +1,12 @@
-package com.example.smartvolt.model
+package com.example.smartvolt.model.local.dao
 
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.smartvolt.model.MarcaEntity
-import com.example.smartvolt.model.EstadoMarca
+import com.example.smartvolt.model.local.entity.MarcaEntity
+import com.example.smartvolt.model.domain.EstadoMarca
 import kotlinx.coroutines.flow.Flow
 
 @Dao

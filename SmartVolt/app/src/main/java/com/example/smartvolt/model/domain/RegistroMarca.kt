@@ -1,4 +1,4 @@
-package com.example.smartvolt.model
+package com.example.smartvolt.model.domain
 
 /**
  * Los 6 tipos de marca según el flujo de la aplicación :

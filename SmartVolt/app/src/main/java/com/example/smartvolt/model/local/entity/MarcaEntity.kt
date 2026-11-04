@@ -1,11 +1,11 @@
-package com.example.smartvolt.model
+package com.example.smartvolt.model.local.entity
 
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.smartvolt.model.EstadoMarca
-import com.example.smartvolt.model.RegistroMarca
-import com.example.smartvolt.model.TipoMarca
+import com.example.smartvolt.model.domain.EstadoMarca
+import com.example.smartvolt.model.domain.RegistroMarca
+import com.example.smartvolt.model.domain.TipoMarca
 
 /**
  * Tabla local de marcas de asistencia.

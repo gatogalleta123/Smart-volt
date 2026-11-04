@@ -1,4 +1,4 @@
-package com.example.smartvolt.model
+package com.example.smartvolt.model.domain
 
 data class DetalleHorasExtra(
     val id: String = "",
