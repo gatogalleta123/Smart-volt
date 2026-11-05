@@ -22,6 +22,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,12 +33,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.smartvolt.model.domain.EstadoJornadaExtra
+import com.example.smartvolt.model.domain.EstadoMarca
 import com.example.smartvolt.model.domain.EstadoMarcaDetalle
 import com.example.smartvolt.model.domain.JornadaHorasExtra
 import com.example.smartvolt.model.domain.MarcaDetalle
-import com.example.smartvolt.ui.components.asistencia.MarcaAsistenciaCard
+import com.example.smartvolt.model.domain.RegistroMarca
+import com.example.smartvolt.model.domain.TipoMarca
+import com.example.smartvolt.ui.components.asistencia.DetalleAsistenciasSheet
 import com.example.smartvolt.ui.components.asistencia.ResumenAsistenciaAzulCard
+import com.example.smartvolt.ui.components.asistencia.ResumenAsistenciasMesCard
 import com.example.smartvolt.ui.components.calendario.CalendarioAsistenciaDialog
 import com.example.smartvolt.ui.components.encabezados.Header
 import com.example.smartvolt.ui.components.horasextra.HorasExtraMesCard
@@ -47,15 +53,37 @@ import com.example.smartvolt.ui.theme.FondoPrincipal
 import com.example.smartvolt.ui.theme.SmartVoltTheme
 import com.example.smartvolt.ui.theme.TextoPrincipal
 import com.example.smartvolt.ui.theme.TextoSobreAmarillo
+import com.example.smartvolt.viewmodel.AsistenciaViewModel
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 /**
- * Pestaña "Asistencia": últimas marcas, resumen mensual y horas extra del mes.
- * Solo visual: recibe los datos por parámetro (por defecto, datos ficticios de ejemplo).
+ * Versión con estado: lee las marcas del mes desde Room (vía ViewModel)
+ * y delega la parte visual en [AsistenciaContent].
  */
 @Composable
 fun AsistenciaView(
-    marcasRecientes: List<MarcaDetalle> = marcasRecientesEjemplo,
-    mes: String = "Octubre",
+    viewModel: AsistenciaViewModel = viewModel()
+) {
+    val marcasDelMes by viewModel.marcasDelMes.collectAsState()
+    val asistenciasDelMes by viewModel.asistenciasDelMes.collectAsState()
+
+    AsistenciaContent(
+        marcasDelMes = marcasDelMes,
+        asistenciasDelMes = asistenciasDelMes
+    )
+}
+
+/**
+ * Pestaña "Asistencia": resumen de asistencias del mes (con popup de detalle),
+ * resumen mensual y horas extra del mes.
+ */
+@Composable
+fun AsistenciaContent(
+    marcasDelMes: List<RegistroMarca>,
+    asistenciasDelMes: Int,
+    mes: String = nombreMesActual(),
     asistenciasMarcadas: Int = 15,
     asistenciasTotales: Int = 30,
     horasExtraFormateadas: String = "12h 30 min",
@@ -65,9 +93,19 @@ fun AsistenciaView(
     onCambiarPeriodo: () -> Unit = {}
 ) {
     var mostrarCalendario by remember { mutableStateOf(false) }
+    var mostrarDetalle by remember { mutableStateOf(false) }
 
     if (mostrarCalendario) {
         CalendarioAsistenciaDialog(onDismiss = { mostrarCalendario = false })
+    }
+
+    if (mostrarDetalle) {
+        DetalleAsistenciasSheet(
+            mes = mes,
+            ultimaActualizacion = fechaHoy(),
+            marcas = marcasDelMes,
+            onDismiss = { mostrarDetalle = false }
+        )
     }
 
     Column(
@@ -130,9 +168,11 @@ fun AsistenciaView(
                 }
             }
 
-            marcasRecientes.forEach { marca ->
-                MarcaAsistenciaCard(marca = marca)
-            }
+            // Reemplaza la lista de tarjetas azules por la tarjeta resumen + popup
+            ResumenAsistenciasMesCard(
+                cantidad = asistenciasDelMes,
+                onVerDetalle = { mostrarDetalle = true }
+            )
 
             ResumenAsistenciaAzulCard(
                 mes = mes,
@@ -150,21 +190,20 @@ fun AsistenciaView(
     }
 }
 
-// ---------- Datos ficticios para previews y pruebas ----------
+// ---------- Utilidades ----------
 
-private val marcasRecientesEjemplo = listOf(
-    MarcaDetalle(
-        id = "1", titulo = "Marca de entrada", fecha = "23 de octubre", faena = "Obra Norte",
-        hora = "9:31", estado = EstadoMarcaDetalle.PENDIENTE
-    ),
-    MarcaDetalle(
-        id = "2", titulo = "Marca de salida", fecha = "23 de octubre", faena = "Obra Norte",
-        hora = "9:31", estado = EstadoMarcaDetalle.VALIDADA
-    ),
-    MarcaDetalle(
-        id = "3", titulo = "Marca de entrada", fecha = "23 de octubre", faena = "Obra Norte",
-        hora = "9:31", estado = EstadoMarcaDetalle.VALIDADA
-    )
+private fun nombreMesActual(): String =
+    SimpleDateFormat("MMMM", Locale("es")).format(Date())
+        .replaceFirstChar { it.uppercase() }
+
+private fun fechaHoy(): String =
+    SimpleDateFormat("d/M/yyyy", Locale.getDefault()).format(Date())
+
+// ---------- Datos ficticios para previews ----------
+
+private val marcasEjemplo = listOf(
+    RegistroMarca("1", TipoMarca.ENTRADA, "08:31", "4 de noviembre", "Obra frente 2", EstadoMarca.VALIDADA),
+    RegistroMarca("2", TipoMarca.ENTRADA, "08:29", "3 de noviembre", "Obra frente 2", EstadoMarca.PENDIENTE)
 )
 
 private val jornadasEjemplo = listOf(
@@ -198,6 +237,9 @@ private val jornadasEjemplo = listOf(
 @Composable
 fun AsistenciaViewPreview() {
     SmartVoltTheme(dynamicColor = false) {
-        AsistenciaView()
+        AsistenciaContent(
+            marcasDelMes = marcasEjemplo,
+            asistenciasDelMes = 23
+        )
     }
 }
