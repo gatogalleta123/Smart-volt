@@ -26,6 +26,8 @@ import androidx.compose.ui.unit.sp
 import com.example.smartvolt.ui.theme.Error
 import com.example.smartvolt.ui.theme.Exito
 import com.example.smartvolt.ui.theme.SmartVoltTheme
+import com.example.smartvolt.ui.theme.Superficie
+import com.example.smartvolt.ui.theme.TextoPrincipal
 
 @Composable
 fun EstadoConexionCard(
@@ -33,10 +35,10 @@ fun EstadoConexionCard(
     modifier: Modifier = Modifier
 ) {
     // Definición condicional según los 2 estados del mockup
-    val colorFondo = if (estaConectado) Exito else Error
+    val colorFondo = Superficie
     val icono = if (estaConectado) Icons.Outlined.Wifi else Icons.Outlined.WifiOff
     val texto = if (estaConectado) "Estás conectado" else "No tienes conexión"
-    val colorIcono = Color.White
+    val colorIcono = if (estaConectado) Exito else Error
 
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -64,7 +66,7 @@ fun EstadoConexionCard(
                 text = texto,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.White
+                color = TextoPrincipal
             )
         }
     }

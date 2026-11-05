@@ -160,7 +160,6 @@ fun MarcajeContent(
                 .padding(top = 16.dp, bottom = 20.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            EstadoConexionCard(estaConectado = estaConectado)
             FaenaActualCard(nombreFaena = nombreFaena)
         }
 
@@ -172,6 +171,7 @@ fun MarcajeContent(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            EstadoConexionCard(estaConectado = estaConectado)
             TituloSeccion(texto = "Estados de permiso")
 
             PermisosMarcajeCard(

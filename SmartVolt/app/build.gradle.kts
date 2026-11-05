@@ -44,6 +44,14 @@ android {
 }
 
 dependencies {
+    //Librería de mapas OpenStreetMap para Android
+    implementation("org.osmdroid:osmdroid-android:6.1.18")
+    // Servicios de goggle para la Ubicación
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+
+    //API de acompañamiento oficial de Google para permisos en compose
+    implementation("com.google.accompanist:accompanist-permissions:0.34.0")
+
     // Rutas
     val nav_version = "2.8.8"
     implementation("androidx.navigation:navigation-compose:${nav_version}")

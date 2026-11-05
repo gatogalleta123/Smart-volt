@@ -48,7 +48,7 @@ fun TarjetaMarcaje(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(170.dp)
+            .height(220.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(brush = fondo)
             .clickable(onClick = onClick),
@@ -114,7 +114,7 @@ fun TarjetaMarcajeEntradaOfflinePreview() {
 fun TarjetaMarcajeSalidaPreview() {
     SmartVoltTheme(dynamicColor = false) {
         TarjetaMarcaje(
-            titulo = "Salida por marcar",
+            titulo = "Validar y Marcar Salida",
             hora = "5:30 p.m",
             modifier = Modifier.padding(16.dp)
         )
@@ -126,7 +126,7 @@ fun TarjetaMarcajeSalidaPreview() {
 fun TarjetaMarcajeSalidaOfflinePreview() {
     SmartVoltTheme(dynamicColor = false) {
         TarjetaMarcaje(
-            titulo = "Salida por marcar sin conexión",
+            titulo = "Marcar Salida sin conexion",
             hora = "5:30 p.m",
             sinConexion = true,
             modifier = Modifier.padding(16.dp)

@@ -67,14 +67,14 @@ fun ItemMarcaAsistencia(
     val (colorRayo, colorFondoBadge, colorTextoBadge, etiquetaEstado) = when (registro.estado) {
         EstadoMarca.VALIDADA -> Quadruple(
             first = AmarilloPrincipal,                 // Rayo amarillo brillante
-            second = FondoExito,
-            third = Exito,
+            second = Exito,
+            third = TextoSobreAzul,
             fourth = "Validada"
         )
         EstadoMarca.PENDIENTE -> Quadruple(
             first = Color.Gray.copy(alpha = 0.5f),     // Rayo gris desaturado
-            second = FondoAdvertencia,
-            third = Advertencia,
+            second = Advertencia,
+            third = TextoSobreAzul,
             fourth = "Pendiente"
         )
     }
@@ -87,16 +87,6 @@ fun ItemMarcaAsistencia(
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Row() {
-            // Vector de rayo (cambia entre amarillo normal y gris según la validez)
-            Icon(
-                painter = painterResource(id = R.drawable.bolt_vector),
-                contentDescription = "Estado marcaje",
-                tint = colorRayo,
-                modifier = Modifier.size(16.dp)
-            )
-            Spacer(modifier = Modifier.width(4.dp))
-        }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -104,6 +94,18 @@ fun ItemMarcaAsistencia(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            //Icono de rayo interactivo
+            Row(
+            ) {
+                // Vector de rayo (cambia entre amarillo normal y gris según la validez)
+                Icon(
+                    painter = painterResource(id = R.drawable.bolt_vector),
+                    contentDescription = "Estado marcaje",
+                    tint = colorRayo,
+                    modifier = Modifier.size(34.dp)
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+            }
             // Secciones a la izquierda: Título con ícono representativo pequeño + Fecha y Faena
             Column(
                 modifier = Modifier.weight(1f)
