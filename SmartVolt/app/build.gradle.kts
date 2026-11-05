@@ -56,6 +56,12 @@ dependencies {
     val nav_version = "2.8.8"
     implementation("androidx.navigation:navigation-compose:${nav_version}")
 
+    // CameraX (cámara frontal)
+    implementation(libs.camera.core)
+    implementation(libs.camera.camera2)
+    implementation(libs.camera.lifecycle)
+    implementation(libs.camera.view)
+
     // Android
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

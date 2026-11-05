@@ -1,5 +1,6 @@
 package com.example.smartvolt
 
+import com.example.smartvolt.model.local.temporal.FotoTemporalStorage
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -18,7 +19,11 @@ import com.example.smartvolt.ui.view.SplashScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        super.onCreate(savedInstanceState )
+        // La foto temporal no sobrevive al cierre de la app: se limpia en cada arranque nuevo
+        if (savedInstanceState == null) {
+            FotoTemporalStorage.limpiarTodo(applicationContext)
+        }
         enableEdgeToEdge()
         setContent {
             SmartVoltTheme {
