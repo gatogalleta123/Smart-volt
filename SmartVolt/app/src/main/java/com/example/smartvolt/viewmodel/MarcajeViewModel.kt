@@ -1,5 +1,8 @@
 package com.example.smartvolt.viewmodel
 
+import com.example.smartvolt.model.domain.PasoValidacion
+import com.example.smartvolt.model.domain.Totem
+import kotlinx.coroutines.Job
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -30,6 +33,45 @@ class MarcajeViewModel(application: Application) : AndroidViewModel(application)
 
     private val _sincronizando = MutableStateFlow(false)
     val sincronizando: StateFlow<Boolean> = _sincronizando.asStateFlow()
+
+    // ---------- Flujo de validación de entrada ----------
+    private val _paso = MutableStateFlow(PasoValidacion.INACTIVO)
+    val paso: StateFlow<PasoValidacion> = _paso.asStateFlow()
+
+    private val _totemSeleccionado = MutableStateFlow<Totem?>(null)
+    val totemSeleccionado: StateFlow<Totem?> = _totemSeleccionado.asStateFlow()
+
+    // Datos ficticios (MVP). Luego vendrán del escaneo BLE real.
+    val totemsDisponibles: List<Totem> = listOf(
+        Totem("1", "Totem Obra 2"),
+        Totem("2", "Totem Obra 3"),
+        Totem("3", "Totem Obra 6")
+    )
+
+    private var jobBusqueda: Job? = null
+
+    fun iniciarValidacion() {
+        jobBusqueda?.cancel()
+        jobBusqueda = viewModelScope.launch {
+            _paso.value = PasoValidacion.BUSCANDO_TOTEMS
+            delay(2000) // simula la búsqueda de tótems
+            _paso.value = PasoValidacion.SELECCION_TOTEM
+        }
+    }
+
+    fun seleccionarTotem(totem: Totem) {
+        _totemSeleccionado.value = totem
+        _paso.value = PasoValidacion.SOLICITANDO_CAMARA
+    }
+
+    fun camaraResuelta(concedido: Boolean) {
+        _paso.value = if (concedido) PasoValidacion.CONFIRMAR_FOTO else PasoValidacion.INACTIVO
+    }
+
+    fun cancelarValidacion() {
+        jobBusqueda?.cancel()
+        _paso.value = PasoValidacion.INACTIVO
+    }
 
     fun registrarMarca(tipo: TipoMarca, hora: String, fecha: String, faena: String) {
         viewModelScope.launch {

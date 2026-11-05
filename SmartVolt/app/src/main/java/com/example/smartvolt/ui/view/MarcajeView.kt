@@ -1,5 +1,10 @@
 package com.example.smartvolt.ui.view
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,23 +22,28 @@ import androidx.compose.material.icons.outlined.WifiOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.smartvolt.model.domain.EstadoMarca
 import com.example.smartvolt.model.domain.EstadoVerificacion
+import com.example.smartvolt.model.domain.PasoValidacion
 import com.example.smartvolt.model.domain.RegistroMarca
 import com.example.smartvolt.model.domain.TipoMarca
+import com.example.smartvolt.ui.components.asistencia.ItemMarcaAsistencia
+import com.example.smartvolt.ui.components.asistencia.TarjetaMarcaje
 import com.example.smartvolt.ui.components.botones.BotonAccionGradiente
 import com.example.smartvolt.ui.components.conexion.EstadoConexionCard
 import com.example.smartvolt.ui.components.conexion.FaenaActualCard
-import com.example.smartvolt.ui.components.asistencia.ItemMarcaAsistencia
-import com.example.smartvolt.ui.components.permisos.PermisosMarcajeCard
-import com.example.smartvolt.ui.components.asistencia.TarjetaMarcaje
 import com.example.smartvolt.ui.components.encabezados.TituloSeccion
+import com.example.smartvolt.ui.components.marcaje.ValidacionMarcajeDialog
+import com.example.smartvolt.ui.components.permisos.PermisosMarcajeCard
 import com.example.smartvolt.ui.theme.AzulRey
 import com.example.smartvolt.ui.theme.FondoPrincipal
 import com.example.smartvolt.ui.theme.SmartVoltGradients
@@ -60,6 +70,33 @@ fun MarcajeView(
 ) {
     val marcas by viewModel.marcas.collectAsState()
     val sincronizando by viewModel.sincronizando.collectAsState()
+    val paso by viewModel.paso.collectAsState()
+    val context = LocalContext.current
+
+    // Lanzador del permiso de cámara
+    val lanzadorCamara = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { concedido ->
+        viewModel.camaraResuelta(concedido)
+        if (!concedido) {
+            Toast.makeText(
+                context,
+                "Se necesita el permiso de cámara para validar tu identidad",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
+    // Cuando el flujo llega al paso de cámara, pedimos el permiso (o seguimos si ya está concedido)
+    LaunchedEffect(paso) {
+        if (paso == PasoValidacion.SOLICITANDO_CAMARA) {
+            val yaConcedido = ContextCompat.checkSelfPermission(
+                context, Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED
+            if (yaConcedido) viewModel.camaraResuelta(true)
+            else lanzadorCamara.launch(Manifest.permission.CAMERA)
+        }
+    }
 
     MarcajeContent(
         estaConectado = estaConectado,
@@ -71,15 +108,17 @@ fun MarcajeView(
         horaTarjeta = horaActual(),
         marcas = marcas,
         sincronizando = sincronizando,
-        onRegistrarMarca = {
-            viewModel.registrarMarca(
-                tipo = tipoMarca,
-                hora = horaActual(),
-                fecha = fechaActual(),
-                faena = nombreFaena
-            )
-        },
+        onIniciarValidacion = { viewModel.iniciarValidacion() },
         onSincronizar = { viewModel.sincronizar() }
+    )
+
+    // Diálogo del flujo: buscando tótems -> elegir tótem -> aviso de foto
+    ValidacionMarcajeDialog(
+        paso = paso,
+        totems = viewModel.totemsDisponibles,
+        onSeleccionarTotem = { viewModel.seleccionarTotem(it) },
+        onConfirmarFoto = { /* TODO: siguiente instrucción (abrir cámara y registrar la marca) */ },
+        onCancelar = { viewModel.cancelarValidacion() }
     )
 }
 
@@ -97,7 +136,7 @@ fun MarcajeContent(
     horaTarjeta: String,
     marcas: List<RegistroMarca>,
     sincronizando: Boolean,
-    onRegistrarMarca: () -> Unit,
+    onIniciarValidacion: () -> Unit,
     onSincronizar: () -> Unit
 ) {
     val sinConexion = !estaConectado
@@ -145,7 +184,7 @@ fun MarcajeContent(
                 titulo = titulo,
                 hora = horaTarjeta,
                 sinConexion = sinConexion,
-                onClick = onRegistrarMarca
+                onClick = onIniciarValidacion
             )
 
             BotonAccionGradiente(
@@ -221,7 +260,7 @@ fun MarcajeContentOnlinePreview() {
             horaTarjeta = "08:30 a.m",
             marcas = emptyList(),
             sincronizando = false,
-            onRegistrarMarca = {},
+            onIniciarValidacion = {},
             onSincronizar = {}
         )
     }
@@ -241,7 +280,7 @@ fun MarcajeContentOfflinePreview() {
             horaTarjeta = "08:30 a.m",
             marcas = marcasEjemplo,
             sincronizando = false,
-            onRegistrarMarca = {},
+            onIniciarValidacion = {},
             onSincronizar = {}
         )
     }
@@ -261,7 +300,7 @@ fun MarcajeContentSincronizandoPreview() {
             horaTarjeta = "17:30 p.m",
             marcas = marcasEjemplo,
             sincronizando = true,
-            onRegistrarMarca = {},
+            onIniciarValidacion = {},
             onSincronizar = {}
         )
     }
