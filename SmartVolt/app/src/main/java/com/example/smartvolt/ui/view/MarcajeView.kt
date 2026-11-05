@@ -1,5 +1,15 @@
 package com.example.smartvolt.ui.view
 
+
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import com.example.smartvolt.model.domain.EstadoUbicacion
+import com.example.smartvolt.model.domain.LecturaUbicacion
+import com.example.smartvolt.model.domain.toEstadoVerificacion
+import com.example.smartvolt.ui.components.ubicacion.AlertaAnomaliaUbicacion
+import com.example.smartvolt.ui.components.ubicacion.MapaUbicacionCard
 import android.Manifest
 import android.content.pm.PackageManager
 import android.widget.Toast
@@ -71,9 +81,10 @@ fun MarcajeView(
     val marcas by viewModel.marcas.collectAsState()
     val sincronizando by viewModel.sincronizando.collectAsState()
     val paso by viewModel.paso.collectAsState()
+    val ubicacion by viewModel.ubicacion.collectAsState()
     val context = LocalContext.current
 
-    // Lanzador del permiso de cámara
+    // Lanzador del permiso de cámara (sin cambios)
     val lanzadorCamara = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { concedido ->
@@ -87,7 +98,21 @@ fun MarcajeView(
         }
     }
 
-    // Cuando el flujo llega al paso de cámara, pedimos el permiso (o seguimos si ya está concedido)
+    // Lanzador del permiso de ubicación
+    val lanzadorUbicacion = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { viewModel.actualizarUbicacion() }
+
+    // Al entrar a la pantalla, pedimos el permiso si falta
+    LaunchedEffect(Unit) {
+        val concedido = ContextCompat.checkSelfPermission(
+            context, Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+        if (concedido) viewModel.actualizarUbicacion()
+        else lanzadorUbicacion.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+    }
+
+    // Cuando el flujo llega al paso de cámara (sin cambios)
     LaunchedEffect(paso) {
         if (paso == PasoValidacion.SOLICITANDO_CAMARA) {
             val yaConcedido = ContextCompat.checkSelfPermission(
@@ -103,21 +128,22 @@ fun MarcajeView(
         nombreFaena = nombreFaena,
         tipoMarca = tipoMarca,
         estadoBluetooth = estadoBluetooth,
-        estadoGps = estadoGps,
+        // El GPS ahora refleja la verificación real; si aún no hay lectura, usa el valor recibido
+        estadoGps = ubicacion?.estado?.toEstadoVerificacion() ?: estadoGps,
         estadoCamara = estadoCamara,
         horaTarjeta = horaActual(),
         marcas = marcas,
         sincronizando = sincronizando,
         onIniciarValidacion = { viewModel.iniciarValidacion() },
-        onSincronizar = { viewModel.sincronizar() }
+        onSincronizar = { viewModel.sincronizar() },
+        ubicacion = ubicacion
     )
 
-    // Diálogo del flujo: buscando tótems -> elegir tótem -> aviso de foto
     ValidacionMarcajeDialog(
         paso = paso,
         totems = viewModel.totemsDisponibles,
         onSeleccionarTotem = { viewModel.seleccionarTotem(it) },
-        onConfirmarFoto = { /* TODO: siguiente instrucción (abrir cámara y registrar la marca) */ },
+        onConfirmarFoto = { /* TODO: siguiente instrucción */ },
         onCancelar = { viewModel.cancelarValidacion() }
     )
 }
@@ -137,7 +163,8 @@ fun MarcajeContent(
     marcas: List<RegistroMarca>,
     sincronizando: Boolean,
     onIniciarValidacion: () -> Unit,
-    onSincronizar: () -> Unit
+    onSincronizar: () -> Unit,
+    ubicacion: LecturaUbicacion? = null
 ) {
     val sinConexion = !estaConectado
     val tituloBase = if (tipoMarca == TipoMarca.SALIDA) "Salida por marcar" else "Validar y marcar entrada"
@@ -172,6 +199,12 @@ fun MarcajeContent(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             EstadoConexionCard(estaConectado = estaConectado)
+            // La alerta se reabre cada vez que llega una lectura nueva
+            var alertaVisible by remember(ubicacion) { mutableStateOf(true) }
+            AlertaAnomaliaUbicacion(
+                visible = ubicacion?.estado == EstadoUbicacion.SIMULADA && alertaVisible,
+                onCerrar = { alertaVisible = false }
+            )
             TituloSeccion(texto = "Estados de permiso")
 
             PermisosMarcajeCard(
@@ -186,6 +219,13 @@ fun MarcajeContent(
                 sinConexion = sinConexion,
                 onClick = onIniciarValidacion
             )
+
+            val latitud = ubicacion?.latitud
+            val longitud = ubicacion?.longitud
+            if (latitud != null && longitud != null) {
+                TituloSeccion(texto = "Tu ubicación")
+                MapaUbicacionCard(latitud = latitud, longitud = longitud)
+            }
 
             BotonAccionGradiente(
                 texto = "Escanear QR supervisor",

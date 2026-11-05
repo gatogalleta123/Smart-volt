@@ -1,5 +1,8 @@
 package com.example.smartvolt.viewmodel
 
+
+import com.example.smartvolt.geo.UbicacionProvider
+import com.example.smartvolt.model.domain.LecturaUbicacion
 import com.example.smartvolt.model.domain.PasoValidacion
 import com.example.smartvolt.model.domain.Totem
 import kotlinx.coroutines.Job
@@ -47,6 +50,17 @@ class MarcajeViewModel(application: Application) : AndroidViewModel(application)
         Totem("2", "Totem Obra 3"),
         Totem("3", "Totem Obra 6")
     )
+
+    private val ubicacionProvider = UbicacionProvider(application)
+
+    private val _ubicacion = MutableStateFlow<LecturaUbicacion?>(null)
+    val ubicacion: StateFlow<LecturaUbicacion?> = _ubicacion.asStateFlow()
+
+    fun actualizarUbicacion() {
+        viewModelScope.launch {
+            _ubicacion.value = ubicacionProvider.obtenerUbicacion()
+        }
+    }
 
     private var jobBusqueda: Job? = null
 
