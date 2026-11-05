@@ -22,6 +22,10 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -34,6 +38,7 @@ import com.example.smartvolt.model.domain.JornadaHorasExtra
 import com.example.smartvolt.model.domain.MarcaDetalle
 import com.example.smartvolt.ui.components.asistencia.MarcaAsistenciaCard
 import com.example.smartvolt.ui.components.asistencia.ResumenAsistenciaAzulCard
+import com.example.smartvolt.ui.components.calendario.CalendarioAsistenciaDialog
 import com.example.smartvolt.ui.components.encabezados.Header
 import com.example.smartvolt.ui.components.horasextra.HorasExtraMesCard
 import com.example.smartvolt.ui.theme.AmarilloPrincipal
@@ -59,6 +64,12 @@ fun AsistenciaView(
     onVerCalendario: () -> Unit = {},
     onCambiarPeriodo: () -> Unit = {}
 ) {
+    var mostrarCalendario by remember { mutableStateOf(false) }
+
+    if (mostrarCalendario) {
+        CalendarioAsistenciaDialog(onDismiss = { mostrarCalendario = false })
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -98,7 +109,10 @@ fun AsistenciaView(
                         .padding(end = 8.dp)
                 )
                 Button(
-                    onClick = onVerCalendario,
+                    onClick = {
+                        mostrarCalendario = true
+                        onVerCalendario()
+                    },
                     shape = RoundedCornerShape(8.dp),
                     contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
                     colors = ButtonDefaults.buttonColors(
