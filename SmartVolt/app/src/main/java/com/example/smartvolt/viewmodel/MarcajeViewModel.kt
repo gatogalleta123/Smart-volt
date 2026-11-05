@@ -9,14 +9,11 @@ import kotlinx.coroutines.Job
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.smartvolt.model.domain.PasoValidacion
 import com.example.smartvolt.model.domain.RegistroMarca
 import com.example.smartvolt.model.domain.TipoMarca
-import com.example.smartvolt.model.domain.Totem
 import com.example.smartvolt.model.local.database.SmartVoltDatabase
 import com.example.smartvolt.model.local.temporal.FotoTemporalStorage
 import com.example.smartvolt.model.repository.MarcaRepository
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
