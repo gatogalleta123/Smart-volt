@@ -237,9 +237,21 @@ fun MarcajeContent(
 
             val latitud = ubicacion?.latitud
             val longitud = ubicacion?.longitud
+            TituloSeccion(texto = "Tu ubicación")
             if (latitud != null && longitud != null) {
-                TituloSeccion(texto = "Tu ubicación")
                 MapaUbicacionCard(latitud = latitud, longitud = longitud)
+            } else {
+                Text(
+                    text = when (ubicacion?.estado) {
+                        null -> "Obteniendo ubicación GPS..."
+                        EstadoUbicacion.SIN_PERMISO ->
+                            "Activa el permiso de ubicación para mostrar el mapa."
+                        EstadoUbicacion.SIN_SENAL ->
+                            "No se pudo obtener una ubicación. Verifica que el GPS esté activo."
+                        EstadoUbicacion.VERIFICADA, EstadoUbicacion.SIMULADA ->
+                            "No hay coordenadas disponibles para mostrar el mapa."
+                    }
+                )
             }
 
             BotonAccionGradiente(

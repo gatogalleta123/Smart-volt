@@ -48,8 +48,8 @@ class UbicacionProvider(private val context: Context) {
     }
 
     @SuppressLint("MissingPermission")
-    private suspend fun obtenerLocalizacionActual(): Location? =
-        suspendCancellableCoroutine { continuacion ->
+    private suspend fun obtenerLocalizacionActual(): Location? {
+        val actual = suspendCancellableCoroutine<Location?> { continuacion ->
             val cancelacion = CancellationTokenSource()
             cliente.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, cancelacion.token)
                 .addOnSuccessListener { location ->
@@ -60,6 +60,19 @@ class UbicacionProvider(private val context: Context) {
                 }
             continuacion.invokeOnCancellation { cancelacion.cancel() }
         }
+
+        if (actual != null) return actual
+
+        return suspendCancellableCoroutine { continuacion ->
+            cliente.lastLocation
+                .addOnSuccessListener { location ->
+                    if (continuacion.isActive) continuacion.resume(location)
+                }
+                .addOnFailureListener {
+                    if (continuacion.isActive) continuacion.resume(null)
+                }
+        }
+    }
 
     // Location.isMock existe desde API 31; antes se usaba isFromMockProvider
     @Suppress("DEPRECATION")
