@@ -1,5 +1,6 @@
 package com.example.smartvolt.model.repository
 
+import java.util.Calendar
 import com.example.smartvolt.model.domain.EstadoMarca
 import com.example.smartvolt.model.domain.RegistroMarca
 import com.example.smartvolt.model.domain.TipoMarca
@@ -53,5 +54,20 @@ class MarcaRepository(private val dao: MarcaDao) {
             }
         }
         return enviadas
+    }
+
+    /** Marcas del mes en curso, de la más reciente a la más antigua. */
+    fun observarMarcasDelMes(): Flow<List<RegistroMarca>> {
+        val inicio = Calendar.getInstance().apply {
+            set(Calendar.DAY_OF_MONTH, 1)
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+        val fin = (inicio.clone() as Calendar).apply { add(Calendar.MONTH, 1) }
+
+        return dao.observarEntre(inicio.timeInMillis, fin.timeInMillis)
+            .map { lista -> lista.map(MarcaEntity::toModel) }
     }
 }

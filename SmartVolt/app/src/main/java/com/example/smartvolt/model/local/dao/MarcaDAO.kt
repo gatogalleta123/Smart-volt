@@ -23,4 +23,7 @@ interface MarcaDao {
 
     @Query("UPDATE marcas SET sincronizada = 1, estado = :estado WHERE id = :id")
     suspend fun marcarComoSincronizada(id: String, estado: EstadoMarca)
+
+    @Query("SELECT * FROM marcas WHERE creadoEn >= :desde AND creadoEn < :hasta ORDER BY creadoEn DESC")
+    fun observarEntre(desde: Long, hasta: Long): Flow<List<MarcaEntity>>
 }
