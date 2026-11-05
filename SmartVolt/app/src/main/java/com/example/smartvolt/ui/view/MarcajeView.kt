@@ -82,6 +82,8 @@ fun MarcajeView(
     val sincronizando by viewModel.sincronizando.collectAsState()
     val paso by viewModel.paso.collectAsState()
     val ubicacion by viewModel.ubicacion.collectAsState()
+    val foto by viewModel.foto.collectAsState()
+    val horaMarca by viewModel.horaMarca.collectAsState()
     val context = LocalContext.current
 
     // Lanzador del permiso de cámara (sin cambios)
@@ -113,6 +115,7 @@ fun MarcajeView(
     }
 
     // Cuando el flujo llega al paso de cámara (sin cambios)
+    // Cuando el flujo llega al paso de permiso, lo pedimos (o seguimos si ya está concedido)
     LaunchedEffect(paso) {
         if (paso == PasoValidacion.SOLICITANDO_CAMARA) {
             val yaConcedido = ContextCompat.checkSelfPermission(
@@ -142,8 +145,20 @@ fun MarcajeView(
     ValidacionMarcajeDialog(
         paso = paso,
         totems = viewModel.totemsDisponibles,
+        foto = foto,
+        horaMarca = horaMarca,
         onSeleccionarTotem = { viewModel.seleccionarTotem(it) },
-        onConfirmarFoto = { /* TODO: siguiente instrucción */ },
+        onConfirmarAviso = { viewModel.confirmarAvisoFoto() },
+        onFotoTomada = { viewModel.fotoTomada(it) },
+        onContinuarFoto = { viewModel.continuarConFoto(horaActual()) },
+        onReintentarFoto = { viewModel.reintentarFoto() },
+        onContinuarBuenTurno = {
+            viewModel.finalizarMarca(
+                tipo = tipoMarca,
+                fecha = fechaActual(),
+                faena = nombreFaena
+            )
+        },
         onCancelar = { viewModel.cancelarValidacion() }
     )
 }

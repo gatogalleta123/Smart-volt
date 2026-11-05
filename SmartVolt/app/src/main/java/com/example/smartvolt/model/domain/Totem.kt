@@ -11,6 +11,9 @@ enum class PasoValidacion {
     INACTIVO,
     BUSCANDO_TOTEMS,
     SELECCION_TOTEM,
-    SOLICITANDO_CAMARA,
-    CONFIRMAR_FOTO
+    SOLICITANDO_CAMARA,   // permiso del sistema
+    CONFIRMAR_FOTO,       // "A continuación tomaremos una foto"
+    CAMARA,               // cámara frontal
+    REVISAR_FOTO,         // "Confirma tu foto para continuar" (Continuar / Reintentar)
+    BUEN_TURNO            // "Buen turno!" y guardado de la marca
 }
