@@ -20,7 +20,7 @@ sealed class Destinos(val ruta: String) {
         val icono: ImageVector
     ) : Destinos(ruta) {
         object InicioUsuario : Inferior("inicio_usuario", "Inicio", Icons.Filled.Home)
-        object Calendario : Inferior("calendario", "Calendario", Icons.Filled.CalendarMonth)
+        object Calendario : Inferior("asistencia", "Asistencia", Icons.Filled.CalendarMonth)
         object Marcaje : Inferior("marcaje", "Marcaje", Icons.Filled.AccessTimeFilled)
         object Perfil : Inferior("perfil", "Perfil", Icons.Filled.AccountCircle)
         object Menu : Inferior("menu", "Menú", Icons.Filled.Menu)

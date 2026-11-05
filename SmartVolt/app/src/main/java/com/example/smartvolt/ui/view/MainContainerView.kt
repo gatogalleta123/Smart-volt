@@ -66,7 +66,7 @@ fun MainContainerView() {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(Destinos.Inferior.InicioUsuario.ruta) { InicioUsuarioView() }
-            composable(Destinos.Inferior.Calendario.ruta) { PantallaGenerica("Calendario") }
+            composable(Destinos.Inferior.Calendario.ruta) { AsistenciaView() }
             composable(Destinos.Inferior.Marcaje.ruta) { MarcajeView() }
             composable(Destinos.Inferior.Perfil.ruta) { PerfilView() }
             composable(Destinos.Inferior.Menu.ruta) { PantallaGenerica("Menú") }

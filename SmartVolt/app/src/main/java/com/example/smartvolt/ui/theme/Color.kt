@@ -67,6 +67,10 @@ val FondoExito = Color(0xFFE8F5EC)
 val Error = Color(0xFFBA1A1A)
 val FondoError = Color(0xFFFCE8E6)
 
+// colores para el boton de la toolbar asistencia
+val ExitoClaro = Color(0xFF3DDC84)
+val ErrorClaro = Color(0xFFFF4D4D)
+
 val Advertencia = Color(0xFF9A5700)
 val FondoAdvertencia = Color(0xFFFFF0CC)
 
