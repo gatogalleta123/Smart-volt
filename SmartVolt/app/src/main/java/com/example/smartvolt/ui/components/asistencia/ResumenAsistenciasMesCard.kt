@@ -22,6 +22,9 @@ import com.example.smartvolt.ui.theme.AzulCorporativo
 import com.example.smartvolt.ui.theme.SmartVoltTheme
 import com.example.smartvolt.ui.theme.Superficie
 import com.example.smartvolt.ui.theme.TextoPrincipal
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 /** Tarjeta resumen: título, cantidad de asistencias del mes y enlace "Ver detalle". */
 @Composable
@@ -29,7 +32,7 @@ fun ResumenAsistenciasMesCard(
     cantidad: Int,
     onVerDetalle: () -> Unit,
     modifier: Modifier = Modifier,
-    titulo: String = "Asistencias del mes"
+    titulo: String = "Asistencias de ${mesActual()}"
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -70,6 +73,10 @@ fun ResumenAsistenciasMesCard(
         }
     }
 }
+
+private fun mesActual(): String =
+    SimpleDateFormat("MMMM", Locale("es")).format(Date())
+        .replaceFirstChar { it.uppercase() }
 
 @Preview(showBackground = true)
 @Composable

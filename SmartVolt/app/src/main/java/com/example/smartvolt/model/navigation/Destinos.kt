@@ -12,6 +12,7 @@ sealed class Destinos(val ruta: String) {
     object Inicio : Destinos("inicio")
     object Login : Destinos("login")
     object Home : Destinos("home") // contenedor con la barra inferior
+    object EscanerQr : Destinos("escaner_qr")
 
     // Pestañas de la barra inferior
     sealed class Inferior(

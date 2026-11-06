@@ -38,12 +38,14 @@ fun MainContainerView() {
                     NavigationBarItem(
                         selected = rutaActual == destino.ruta,
                         onClick = {
-                            subNavController.navigate(destino.ruta) {
-                                popUpTo(subNavController.graph.findStartDestination().id) {
-                                    saveState = true
+                            if (rutaActual != destino.ruta) {
+                                subNavController.navigate(destino.ruta) {
+                                    popUpTo(subNavController.graph.findStartDestination().id) {
+                                        saveState = false
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = false
                                 }
-                                launchSingleTop = true
-                                restoreState = true
                             }
                         },
                         label = { Text(text = destino.etiqueta, fontSize = 10.sp) },
@@ -65,11 +67,45 @@ fun MainContainerView() {
             startDestination = destinosInferiores.first().ruta,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable(Destinos.Inferior.InicioUsuario.ruta) { InicioUsuarioView() }
-            composable(Destinos.Inferior.Calendario.ruta) { AsistenciaView() }
+            composable(Destinos.Inferior.InicioUsuario.ruta) {
+                InicioUsuarioView(
+                    onMarcarAsistencia = {
+                        subNavController.navigate(Destinos.Inferior.Marcaje.ruta) {
+                            launchSingleTop = true
+                        }
+                    },
+                    onEscanearQr = {
+                        subNavController.navigate(Destinos.EscanerQr.ruta) {
+                            launchSingleTop = true
+                        }
+                    }
+                )
+            }
+            composable(Destinos.Inferior.Calendario.ruta) {
+                AsistenciaView(
+                    onEscanearQr = {
+                        subNavController.navigate(Destinos.EscanerQr.ruta) {
+                            launchSingleTop = true
+                        }
+                    }
+                )
+            }
             composable(Destinos.Inferior.Marcaje.ruta) { MarcajeView() }
-            composable(Destinos.Inferior.Perfil.ruta) { PerfilView() }
+            composable(Destinos.Inferior.Perfil.ruta) {
+                PerfilView(
+                    onEscanearQr = {
+                        subNavController.navigate(Destinos.EscanerQr.ruta) {
+                            launchSingleTop = true
+                        }
+                    }
+                )
+            }
             composable(Destinos.Inferior.Menu.ruta) { PantallaGenerica("Menú") }
+            composable(Destinos.EscanerQr.ruta) {
+                com.example.smartvolt.ui.components.marcaje.PantallaEscanerQr(
+                    onVolver = { subNavController.popBackStack() }
+                )
+            }
         }
     }
 }

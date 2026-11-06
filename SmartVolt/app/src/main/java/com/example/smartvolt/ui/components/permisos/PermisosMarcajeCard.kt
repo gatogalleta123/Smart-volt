@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
@@ -27,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
@@ -52,6 +54,9 @@ fun PermisosMarcajeCard(
     estadoBluetooth: EstadoVerificacion = EstadoVerificacion.CORRECTO,
     estadoGps: EstadoVerificacion = EstadoVerificacion.ADVERTENCIA,
     estadoCamara: EstadoVerificacion = EstadoVerificacion.ERROR,
+    onBluetoothClick: () -> Unit = {},
+    onGpsClick: () -> Unit = {},
+    onCamaraClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -70,10 +75,11 @@ fun PermisosMarcajeCard(
                 icono = Icons.Outlined.Bluetooth,
                 estado = estadoBluetooth,
                 textoBase = if (estadoBluetooth == EstadoVerificacion.CORRECTO)
-                    "Validación del tótem (tu bluetooth está activado)"
+                    "Validación del tótem (Bluetooth listo)"
                 else "Validación del tótem pendiente, ",
                 textoAccion = if (estadoBluetooth == EstadoVerificacion.CORRECTO)
-                    null else "activa el bluetooth para seguir"
+                    null else "activa Bluetooth para seguir",
+                onAccion = onBluetoothClick
             )
             ItemPermisoMarcaje(
                 icono = Icons.Filled.LocationOn,
@@ -82,16 +88,18 @@ fun PermisosMarcajeCard(
                     "Ubicación verificada en faena"
                 else "Ubicación por verificar, ",
                 textoAccion = if (estadoGps == EstadoVerificacion.CORRECTO)
-                    null else "activa el gps para seguir"
+                    null else "concede ubicación o activa GPS",
+                onAccion = onGpsClick
             )
             ItemPermisoMarcaje(
                 icono = Icons.Outlined.TagFaces,
                 estado = estadoCamara,
                 textoBase = if (estadoCamara == EstadoVerificacion.CORRECTO)
                     "Cámara lista para validar tu identidad"
-                else "Activa los permisos para ",
+                else "Permiso de cámara pendiente, ",
                 textoAccion = if (estadoCamara == EstadoVerificacion.CORRECTO)
-                    null else "acceder a la cámara"
+                    null else "concede acceso a la cámara",
+                onAccion = onCamaraClick
             )
         }
     }
@@ -102,7 +110,8 @@ private fun ItemPermisoMarcaje(
     icono: ImageVector,
     estado: EstadoVerificacion,
     textoBase: String,
-    textoAccion: String?
+    textoAccion: String?,
+    onAccion: () -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -115,17 +124,27 @@ private fun ItemPermisoMarcaje(
             modifier = Modifier.size(28.dp)
         )
 
-        Text(
-            text = buildAnnotatedString {
-                append(textoBase)
-                if (textoAccion != null) {
-                    withStyle(SpanStyle(color = AzulCorporativo)) { append(textoAccion) }
+        val texto = buildAnnotatedString {
+            append(textoBase)
+            if (textoAccion != null) {
+                pushStringAnnotation(tag = "permiso", annotation = "accion")
+                withStyle(SpanStyle(color = AzulCorporativo)) { append(textoAccion) }
+                pop()
+            }
+        }
+        ClickableText(
+            text = texto,
+            style = TextStyle(
+                fontSize = 12.sp,
+                lineHeight = 15.sp,
+                color = TextoPrincipal,
+                textAlign = TextAlign.Center
+            ),
+            onClick = { offset ->
+                if (texto.getStringAnnotations("permiso", offset, offset).isNotEmpty()) {
+                    onAccion()
                 }
             },
-            fontSize = 12.sp,
-            lineHeight = 15.sp,
-            color = TextoPrincipal,
-            textAlign = TextAlign.Center,
             modifier = Modifier
                 .weight(1f)
                 .padding(horizontal = 12.dp)

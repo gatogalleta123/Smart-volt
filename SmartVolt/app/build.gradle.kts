@@ -44,6 +44,8 @@ android {
 }
 
 dependencies {
+
+    implementation("androidx.preference:preference-ktx:1.2.1")
     //Librería de mapas OpenStreetMap para Android
     implementation("org.osmdroid:osmdroid-android:6.1.18")
     // Servicios de goggle para la Ubicación

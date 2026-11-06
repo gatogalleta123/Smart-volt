@@ -40,7 +40,8 @@ import com.example.smartvolt.ui.theme.TextoPrincipal
 @Composable
 fun PerfilView(
     datos: DatosPerfil = DatosPerfil(),
-    onEditarFoto: () -> Unit = {}
+    onEditarFoto: () -> Unit = {},
+    onEscanearQr: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -58,7 +59,7 @@ fun PerfilView(
             Header(
                 saludo = "Mi perfil",
                 fecha = null,
-                mostrarNotificaciones = false
+                onClickNotificaciones = onEscanearQr
             )
         }
 

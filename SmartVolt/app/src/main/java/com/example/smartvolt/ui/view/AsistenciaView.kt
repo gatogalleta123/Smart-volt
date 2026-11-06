@@ -42,10 +42,13 @@ import com.example.smartvolt.model.domain.MarcaDetalle
 import com.example.smartvolt.model.domain.RegistroMarca
 import com.example.smartvolt.model.domain.TipoMarca
 import com.example.smartvolt.ui.components.asistencia.DetalleAsistenciasSheet
+import com.example.smartvolt.ui.components.asistencia.MarcaAsistenciaCard
 import com.example.smartvolt.ui.components.asistencia.ResumenAsistenciaAzulCard
 import com.example.smartvolt.ui.components.asistencia.ResumenAsistenciasMesCard
 import com.example.smartvolt.ui.components.calendario.CalendarioAsistenciaDialog
 import com.example.smartvolt.ui.components.encabezados.Header
+import com.example.smartvolt.ui.components.encabezados.TituloSeccion
+import com.example.smartvolt.ui.theme.AzulElectrico
 import com.example.smartvolt.ui.components.horasextra.HorasExtraMesCard
 import com.example.smartvolt.ui.theme.AmarilloPrincipal
 import com.example.smartvolt.ui.theme.AzulRey
@@ -64,14 +67,21 @@ import java.util.Locale
  */
 @Composable
 fun AsistenciaView(
+    onEscanearQr: () -> Unit = {},
     viewModel: AsistenciaViewModel = viewModel()
 ) {
     val marcasDelMes by viewModel.marcasDelMes.collectAsState()
+    val marcasGuardadas by viewModel.marcasGuardadas.collectAsState()
     val asistenciasDelMes by viewModel.asistenciasDelMes.collectAsState()
+    val sincronizando by viewModel.sincronizando.collectAsState()
 
     AsistenciaContent(
         marcasDelMes = marcasDelMes,
-        asistenciasDelMes = asistenciasDelMes
+        marcasGuardadas = marcasGuardadas,
+        asistenciasDelMes = asistenciasDelMes,
+        sincronizando = sincronizando,
+        onSincronizar = { viewModel.sincronizar() },
+        onEscanearQr = onEscanearQr
     )
 }
 
@@ -83,11 +93,15 @@ fun AsistenciaView(
 fun AsistenciaContent(
     marcasDelMes: List<RegistroMarca>,
     asistenciasDelMes: Int,
+    marcasGuardadas: List<RegistroMarca> = marcasDelMes,
     mes: String = nombreMesActual(),
     asistenciasMarcadas: Int = 15,
     asistenciasTotales: Int = 30,
     horasExtraFormateadas: String = "12h 30 min",
     periodoHorasExtra: String = "Octubre 2026",
+    sincronizando: Boolean = false,
+    onSincronizar: () -> Unit = {},
+    onEscanearQr: () -> Unit = {},
     jornadasHorasExtra: List<JornadaHorasExtra> = jornadasEjemplo,
     onVerCalendario: () -> Unit = {},
     onCambiarPeriodo: () -> Unit = {}
@@ -121,7 +135,7 @@ fun AsistenciaContent(
                 .statusBarsPadding()
                 .padding(bottom = 16.dp)
         ) {
-            Header()
+            Header(onClickNotificaciones = onEscanearQr)
         }
 
         // Contenido
@@ -171,8 +185,40 @@ fun AsistenciaContent(
             // Reemplaza la lista de tarjetas azules por la tarjeta resumen + popup
             ResumenAsistenciasMesCard(
                 cantidad = asistenciasDelMes,
-                onVerDetalle = { mostrarDetalle = true }
+                onVerDetalle = { mostrarDetalle = true },
+                titulo = "Asistencias de $mes"
             )
+
+            TituloSeccion(texto = "Marcas guardadas (${marcasGuardadas.size})")
+            if (marcasGuardadas.isEmpty()) {
+                Text(text = "Aún no tienes marcas registradas.")
+            } else {
+                marcasGuardadas.take(5).forEach { marca ->
+                    MarcaAsistenciaCard(
+                        marca = MarcaDetalle(
+                            titulo = marca.tipo.tituloDisplay,
+                            fecha = marca.fecha,
+                            faena = marca.ubicacionFaena,
+                            hora = marca.hora,
+                            estado = when (marca.estado) {
+                                EstadoMarca.VALIDADA -> EstadoMarcaDetalle.VALIDADA
+                                EstadoMarca.PENDIENTE -> EstadoMarcaDetalle.PENDIENTE
+                            }
+                        )
+                    )
+                }
+            }
+            Button(
+                onClick = onSincronizar,
+                enabled = marcasGuardadas.any { it.estado == EstadoMarca.PENDIENTE } && !sincronizando,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = AzulElectrico,
+                    contentColor = androidx.compose.ui.graphics.Color.White
+                ),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = if (sincronizando) "Sincronizando..." else "Sincronizar marcas")
+            }
 
             ResumenAsistenciaAzulCard(
                 mes = mes,

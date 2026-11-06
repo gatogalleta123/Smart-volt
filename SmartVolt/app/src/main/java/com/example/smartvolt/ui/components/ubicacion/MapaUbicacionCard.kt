@@ -14,10 +14,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.CopyrightOverlay
 import org.osmdroid.views.overlay.Marker
 
 /**
@@ -34,12 +34,11 @@ fun MapaUbicacionCard(
     val ciclo = LocalLifecycleOwner.current
 
     val mapa = remember {
-        // OSM exige identificar la app en las peticiones de tiles
-        Configuration.getInstance().userAgentValue = contexto.packageName
         MapView(contexto).apply {
             setTileSource(TileSourceFactory.MAPNIK)
             setMultiTouchControls(true)
             controller.setZoom(17.0)
+            overlays.add(CopyrightOverlay(contexto))  // "© OpenStreetMap contributors"
         }
     }
 
@@ -71,6 +70,9 @@ fun MapaUbicacionCard(
                     setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                     title = "Tu ubicación"
                 }
+            )
+            vista.overlays.add(
+                CopyrightOverlay(contexto)
             )
             vista.invalidate()
         },

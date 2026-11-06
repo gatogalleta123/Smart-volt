@@ -1,65 +1,67 @@
 package com.example.smartvolt.ui.view
 
-
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import com.example.smartvolt.model.domain.EstadoUbicacion
-import com.example.smartvolt.model.domain.LecturaUbicacion
-import com.example.smartvolt.model.domain.toEstadoVerificacion
-import com.example.smartvolt.ui.components.ubicacion.AlertaAnomaliaUbicacion
-import com.example.smartvolt.ui.components.ubicacion.MapaUbicacionCard
 import android.Manifest
+import android.bluetooth.BluetoothAdapter
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.LocationManager
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.os.Build
+import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import com.example.smartvolt.model.domain.EstadoUbicacion
+import com.example.smartvolt.model.domain.LecturaUbicacion
+import com.example.smartvolt.ui.components.ubicacion.AlertaAnomaliaUbicacion
+import com.example.smartvolt.ui.components.ubicacion.MapaUbicacionCard
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.QrCodeScanner
-import androidx.compose.material.icons.outlined.WifiOff
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.smartvolt.model.domain.EstadoMarca
 import com.example.smartvolt.model.domain.EstadoVerificacion
 import com.example.smartvolt.model.domain.PasoValidacion
-import com.example.smartvolt.model.domain.RegistroMarca
 import com.example.smartvolt.model.domain.TipoMarca
-import com.example.smartvolt.ui.components.asistencia.ItemMarcaAsistencia
 import com.example.smartvolt.ui.components.asistencia.TarjetaMarcaje
-import com.example.smartvolt.ui.components.botones.BotonAccionGradiente
 import com.example.smartvolt.ui.components.conexion.EstadoConexionCard
 import com.example.smartvolt.ui.components.conexion.FaenaActualCard
+import com.example.smartvolt.ui.components.encabezados.Header
 import com.example.smartvolt.ui.components.encabezados.TituloSeccion
+import com.example.smartvolt.ui.components.marcaje.PantallaEscanerQr
 import com.example.smartvolt.ui.components.marcaje.ValidacionMarcajeDialog
 import com.example.smartvolt.ui.components.permisos.PermisosMarcajeCard
 import com.example.smartvolt.ui.theme.AzulRey
 import com.example.smartvolt.ui.theme.FondoPrincipal
-import com.example.smartvolt.ui.theme.SmartVoltGradients
 import com.example.smartvolt.ui.theme.SmartVoltTheme
-import com.example.smartvolt.ui.theme.TextoSobreAmarillo
-import com.example.smartvolt.ui.theme.TextoSobreAzul
 import com.example.smartvolt.viewmodel.MarcajeViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -70,26 +72,39 @@ import java.util.Locale
  */
 @Composable
 fun MarcajeView(
-    estaConectado: Boolean = true,
     nombreFaena: String = "Obra frente 2",
-    tipoMarca: TipoMarca = TipoMarca.ENTRADA,
-    estadoBluetooth: EstadoVerificacion = EstadoVerificacion.CORRECTO,
-    estadoGps: EstadoVerificacion = EstadoVerificacion.ADVERTENCIA,
-    estadoCamara: EstadoVerificacion = EstadoVerificacion.ERROR,
     viewModel: MarcajeViewModel = viewModel()
 ) {
     val marcas by viewModel.marcas.collectAsState()
-    val sincronizando by viewModel.sincronizando.collectAsState()
     val paso by viewModel.paso.collectAsState()
     val ubicacion by viewModel.ubicacion.collectAsState()
     val foto by viewModel.foto.collectAsState()
     val horaMarca by viewModel.horaMarca.collectAsState()
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val conectado = rememberInternetConnection()
+    var revisionPermisos by remember { mutableIntStateOf(0) }
+    var mostrarEscanerQr by remember { mutableStateOf(false) }
 
-    // Lanzador del permiso de cámara (sin cambios)
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) revisionPermisos++
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
+    val bluetoothListo = remember(context, revisionPermisos) { bluetoothEstaListo(context) }
+    val gpsListo = remember(context, revisionPermisos) { gpsEstaListo(context) }
+    val camaraLista = remember(context, revisionPermisos) {
+        ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) ==
+            PackageManager.PERMISSION_GRANTED
+    }
+
     val lanzadorCamara = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { concedido ->
+        revisionPermisos++
         viewModel.camaraResuelta(concedido)
         if (!concedido) {
             Toast.makeText(
@@ -100,12 +115,37 @@ fun MarcajeView(
         }
     }
 
-    // Lanzador del permiso de ubicación
+    val lanzadorCamaraQr = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { concedido ->
+        revisionPermisos++
+        if (concedido) {
+            mostrarEscanerQr = true
+        } else {
+            Toast.makeText(context, "Se necesita permiso de cámara para abrir el lector QR", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    val lanzadorPermisoCamara = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { revisionPermisos++ }
+
     val lanzadorUbicacion = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
-    ) { viewModel.actualizarUbicacion() }
+    ) {
+        revisionPermisos++
+        viewModel.actualizarUbicacion()
+    }
 
-    // Al entrar a la pantalla, pedimos el permiso si falta
+    val lanzadorBluetooth = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permisos ->
+        revisionPermisos++
+        if (permisos.values.all { it }) {
+            context.abrirConfiguracion(Settings.ACTION_BLUETOOTH_SETTINGS)
+        }
+    }
+
     LaunchedEffect(Unit) {
         val concedido = ContextCompat.checkSelfPermission(
             context, Manifest.permission.ACCESS_FINE_LOCATION
@@ -114,8 +154,6 @@ fun MarcajeView(
         else lanzadorUbicacion.launch(Manifest.permission.ACCESS_FINE_LOCATION)
     }
 
-    // Cuando el flujo llega al paso de cámara (sin cambios)
-    // Cuando el flujo llega al paso de permiso, lo pedimos (o seguimos si ya está concedido)
     LaunchedEffect(paso) {
         if (paso == PasoValidacion.SOLICITANDO_CAMARA) {
             val yaConcedido = ContextCompat.checkSelfPermission(
@@ -126,19 +164,53 @@ fun MarcajeView(
         }
     }
 
+    val marcaActual = marcas.firstOrNull { it.fecha == fechaActual() }
+    val tipoMarcaActual = siguienteTipoMarca(marcaActual?.tipo)
+
     MarcajeContent(
-        estaConectado = estaConectado,
+        estaConectado = conectado,
         nombreFaena = nombreFaena,
-        tipoMarca = tipoMarca,
-        estadoBluetooth = estadoBluetooth,
-        // El GPS ahora refleja la verificación real; si aún no hay lectura, usa el valor recibido
-        estadoGps = ubicacion?.estado?.toEstadoVerificacion() ?: estadoGps,
-        estadoCamara = estadoCamara,
+        tipoMarca = tipoMarcaActual,
+        estadoBluetooth = if (bluetoothListo) EstadoVerificacion.CORRECTO else EstadoVerificacion.ERROR,
+        estadoGps = if (gpsListo) EstadoVerificacion.CORRECTO else EstadoVerificacion.ERROR,
+        estadoCamara = if (camaraLista) EstadoVerificacion.CORRECTO else EstadoVerificacion.ERROR,
         horaTarjeta = horaActual(),
-        marcas = marcas,
-        sincronizando = sincronizando,
         onIniciarValidacion = { viewModel.iniciarValidacion() },
-        onSincronizar = { viewModel.sincronizar() },
+        onEscanearQr = {
+            if (camaraLista) mostrarEscanerQr = true
+            else lanzadorCamaraQr.launch(Manifest.permission.CAMERA)
+        },
+        onBluetoothClick = {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val permisosNecesarios = arrayOf(
+                    Manifest.permission.BLUETOOTH_SCAN,
+                    Manifest.permission.BLUETOOTH_CONNECT
+                ).filter {
+                    ContextCompat.checkSelfPermission(context, it) != PackageManager.PERMISSION_GRANTED
+                }
+                if (permisosNecesarios.isNotEmpty()) {
+                    lanzadorBluetooth.launch(permisosNecesarios.toTypedArray())
+                } else {
+                    context.abrirConfiguracion(Settings.ACTION_BLUETOOTH_SETTINGS)
+                }
+            } else {
+                context.abrirConfiguracion(Settings.ACTION_BLUETOOTH_SETTINGS)
+            }
+        },
+        onGpsClick = {
+            if (ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                lanzadorUbicacion.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            } else {
+                context.abrirConfiguracion(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+            }
+        },
+        onCamaraClick = {
+            if (!camaraLista) lanzadorPermisoCamara.launch(Manifest.permission.CAMERA)
+        },
         ubicacion = ubicacion
     )
 
@@ -154,13 +226,17 @@ fun MarcajeView(
         onReintentarFoto = { viewModel.reintentarFoto() },
         onContinuarBuenTurno = {
             viewModel.finalizarMarca(
-                tipo = tipoMarca,
+                tipo = tipoMarcaActual,
                 fecha = fechaActual(),
                 faena = nombreFaena
             )
         },
         onCancelar = { viewModel.cancelarValidacion() }
     )
+
+    if (mostrarEscanerQr) {
+        PantallaEscanerQr(onVolver = { mostrarEscanerQr = false })
+    }
 }
 
 /**
@@ -175,17 +251,16 @@ fun MarcajeContent(
     estadoGps: EstadoVerificacion,
     estadoCamara: EstadoVerificacion,
     horaTarjeta: String,
-    marcas: List<RegistroMarca>,
-    sincronizando: Boolean,
     onIniciarValidacion: () -> Unit,
-    onSincronizar: () -> Unit,
+    onEscanearQr: () -> Unit = {},
+    onBluetoothClick: () -> Unit = {},
+    onGpsClick: () -> Unit = {},
+    onCamaraClick: () -> Unit = {},
     ubicacion: LecturaUbicacion? = null
 ) {
     val sinConexion = !estaConectado
-    val tituloBase = if (tipoMarca == TipoMarca.SALIDA) "Salida por marcar" else "Validar y marcar entrada"
+    val tituloBase = textoParaTipoMarca(tipoMarca)
     val titulo = if (sinConexion) "$tituloBase sin conexión" else tituloBase
-
-    val hayPendientes = marcas.any { it.estado == EstadoMarca.PENDIENTE }
 
     Column(
         modifier = Modifier
@@ -202,6 +277,13 @@ fun MarcajeContent(
                 .padding(top = 16.dp, bottom = 20.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            Header(
+                fecha = fechaHeader(),
+                onClickNotificaciones = onEscanearQr,
+                iconoAccion = Icons.Outlined.QrCodeScanner,
+                descripcionAccion = "Escanear QR",
+                textoAccion = "Escanear QR"
+            )
             FaenaActualCard(nombreFaena = nombreFaena)
         }
 
@@ -225,7 +307,10 @@ fun MarcajeContent(
             PermisosMarcajeCard(
                 estadoBluetooth = estadoBluetooth,
                 estadoGps = estadoGps,
-                estadoCamara = estadoCamara
+                estadoCamara = estadoCamara,
+                onBluetoothClick = onBluetoothClick,
+                onGpsClick = onGpsClick,
+                onCamaraClick = onCamaraClick
             )
 
             TarjetaMarcaje(
@@ -254,64 +339,11 @@ fun MarcajeContent(
                 )
             }
 
-            BotonAccionGradiente(
-                texto = "Escanear QR supervisor",
-                icono = Icons.Outlined.QrCodeScanner,
-                fondo = SmartVoltGradients.SecondaryButton,
-                colorContenido = TextoSobreAzul
-            )
-
-            BotonAccionGradiente(
-                texto = "Modo Offline",
-                icono = Icons.Outlined.WifiOff,
-                fondo = SmartVoltGradients.MarcajeOffline,
-                colorContenido = TextoSobreAmarillo
-            )
-
-            // ---- Sección de prueba: marcas guardadas en Room ----
-            TituloSeccion(texto = "Marcas guardadas (${marcas.size})")
-
-            if (marcas.isEmpty()) {
-                Text(text = "Aún no hay marcas. Toca la tarjeta para registrar una.")
-            }
-
-            marcas.forEach { registro ->
-                ItemMarcaAsistencia(registro = registro)
-            }
-
-            Button(
-                onClick = onSincronizar,
-                enabled = hayPendientes && !sincronizando,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = if (sincronizando) "Sincronizando..." else "Sincronizar pendientes")
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
 
 // ---------- Previews (usan datos de ejemplo, sin ViewModel ni Room) ----------
-
-private val marcasEjemplo = listOf(
-    RegistroMarca(
-        id = "1",
-        tipo = TipoMarca.ENTRADA,
-        hora = "08:31",
-        fecha = "12 de octubre",
-        ubicacionFaena = "Obra frente 2",
-        estado = EstadoMarca.VALIDADA
-    ),
-    RegistroMarca(
-        id = "2",
-        tipo = TipoMarca.ENTRADA_COLACION,
-        hora = "13:05",
-        fecha = "12 de octubre",
-        ubicacionFaena = "Obra frente 2",
-        estado = EstadoMarca.PENDIENTE
-    )
-)
 
 @Preview(showBackground = true, showSystemUi = true, name = "1. Online - Sin marcas")
 @Composable
@@ -325,10 +357,7 @@ fun MarcajeContentOnlinePreview() {
             estadoGps = EstadoVerificacion.ADVERTENCIA,
             estadoCamara = EstadoVerificacion.ERROR,
             horaTarjeta = "08:30 a.m",
-            marcas = emptyList(),
-            sincronizando = false,
-            onIniciarValidacion = {},
-            onSincronizar = {}
+            onIniciarValidacion = {}
         )
     }
 }
@@ -345,15 +374,12 @@ fun MarcajeContentOfflinePreview() {
             estadoGps = EstadoVerificacion.CORRECTO,
             estadoCamara = EstadoVerificacion.CORRECTO,
             horaTarjeta = "08:30 a.m",
-            marcas = marcasEjemplo,
-            sincronizando = false,
-            onIniciarValidacion = {},
-            onSincronizar = {}
+            onIniciarValidacion = {}
         )
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true, name = "3. Sincronizando")
+@Preview(showBackground = true, showSystemUi = true, name = "3. Salida")
 @Composable
 fun MarcajeContentSincronizandoPreview() {
     SmartVoltTheme(dynamicColor = false) {
@@ -365,10 +391,7 @@ fun MarcajeContentSincronizandoPreview() {
             estadoGps = EstadoVerificacion.CORRECTO,
             estadoCamara = EstadoVerificacion.CORRECTO,
             horaTarjeta = "17:30 p.m",
-            marcas = marcasEjemplo,
-            sincronizando = true,
-            onIniciarValidacion = {},
-            onSincronizar = {}
+            onIniciarValidacion = {}
         )
     }
 }
@@ -380,3 +403,95 @@ private fun horaActual(): String =
 
 private fun fechaActual(): String =
     SimpleDateFormat("d 'de' MMMM", Locale("es")).format(Date())
+
+private fun fechaHeader(): String =
+    SimpleDateFormat("EEEE d 'de' MMMM", Locale("es")).format(Date())
+        .replaceFirstChar { it.uppercase() }
+
+private fun siguienteTipoMarca(ultimaMarca: TipoMarca?): TipoMarca = when (ultimaMarca) {
+    TipoMarca.ENTRADA -> TipoMarca.ENTRADA_COLACION
+    TipoMarca.ENTRADA_COLACION -> TipoMarca.SALIDA_COLACION
+    TipoMarca.SALIDA_COLACION -> TipoMarca.SALIDA
+    else -> TipoMarca.ENTRADA
+}
+
+private fun textoParaTipoMarca(tipo: TipoMarca): String = when (tipo) {
+    TipoMarca.ENTRADA -> "Validar y marcar entrada"
+    TipoMarca.ENTRADA_COLACION -> "Marcar entrada a colación"
+    TipoMarca.SALIDA_COLACION -> "Marcar salida de colación"
+    TipoMarca.SALIDA -> "Marcar salida"
+    TipoMarca.ENTRADA_HORAS_EXTRA -> "Marcar entrada de horas extra"
+    TipoMarca.SALIDA_HORAS_EXTRA -> "Marcar salida de horas extra"
+}
+
+@Composable
+private fun rememberInternetConnection(): Boolean {
+    val context = LocalContext.current
+    val connectivityManager = remember(context) {
+        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    }
+    var conectado by remember(connectivityManager) {
+        mutableStateOf(connectivityManager.tieneInternetValidado())
+    }
+
+    DisposableEffect(connectivityManager) {
+        val callback = object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                conectado = connectivityManager.tieneInternetValidado(network)
+            }
+
+            override fun onLost(network: Network) {
+                conectado = connectivityManager.tieneInternetValidado()
+            }
+
+            override fun onCapabilitiesChanged(
+                network: Network,
+                networkCapabilities: NetworkCapabilities
+            ) {
+                conectado = networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
+                    networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+            }
+        }
+        connectivityManager.registerDefaultNetworkCallback(callback)
+        onDispose { connectivityManager.unregisterNetworkCallback(callback) }
+    }
+    return conectado
+}
+
+private fun ConnectivityManager.tieneInternetValidado(network: Network? = activeNetwork): Boolean =
+    network?.let { getNetworkCapabilities(it) }?.let {
+        it.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
+            it.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+    } == true
+
+private fun bluetoothEstaListo(context: Context): Boolean {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        val conectPermission = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.BLUETOOTH_CONNECT
+        ) == PackageManager.PERMISSION_GRANTED
+        val scanPermission = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.BLUETOOTH_SCAN
+        ) == PackageManager.PERMISSION_GRANTED
+        if (!conectPermission || !scanPermission) return false
+    }
+    return adaptadorBluetooth()?.isEnabled == true
+}
+
+@Suppress("DEPRECATION")
+private fun adaptadorBluetooth(): BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
+
+private fun gpsEstaListo(context: Context): Boolean {
+    val permisoUbicacion = ContextCompat.checkSelfPermission(
+        context,
+        Manifest.permission.ACCESS_FINE_LOCATION
+    ) == PackageManager.PERMISSION_GRANTED
+    val gpsActivo = (context.getSystemService(Context.LOCATION_SERVICE) as LocationManager)
+        .isProviderEnabled(LocationManager.GPS_PROVIDER)
+    return permisoUbicacion && gpsActivo
+}
+
+private fun Context.abrirConfiguracion(accion: String) {
+    startActivity(Intent(accion).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+}

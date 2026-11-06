@@ -2,9 +2,14 @@ package com.example.smartvolt.ui.components.botones
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTimeFilled
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -30,6 +35,11 @@ fun BotonRegistrarAsistencia(
             contentColor = TextoPrincipal
         )
     ) {
+        Icon(
+            imageVector = Icons.Filled.AccessTimeFilled,
+            contentDescription = null
+        )
+        Spacer(modifier = Modifier.width(12.dp))
         Text(text = texto, fontSize = 28.sp)
     }
 }
