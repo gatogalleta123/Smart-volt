@@ -27,7 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.smartvolt.model.domain.DatosPerfil
-import com.example.smartvolt.ui.components.encabezados.Header
+import com.example.smartvolt.ui.components.HeaderSmartVolt
 import com.example.smartvolt.ui.components.perfil.AvatarPerfil
 import com.example.smartvolt.ui.components.perfil.CampoDatoPerfil
 import com.example.smartvolt.ui.theme.AzulCorporativo
@@ -48,7 +48,7 @@ fun PerfilView(
             .fillMaxSize()
             .background(FondoPrincipal)
     ) {
-        // Zona azul: mismo Header de las demás pantallas, solo con título
+        // Encabezado
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -56,10 +56,9 @@ fun PerfilView(
                 .statusBarsPadding()
                 .padding(bottom = 24.dp)
         ) {
-            Header(
-                saludo = "Mi perfil",
-                fecha = null,
-                onClickNotificaciones = onEscanearQr
+            HeaderSmartVolt(
+                nombreUsuario = "${datos.nombre} ${datos.apellido}",
+                onQrClick = onEscanearQr
             )
         }
 

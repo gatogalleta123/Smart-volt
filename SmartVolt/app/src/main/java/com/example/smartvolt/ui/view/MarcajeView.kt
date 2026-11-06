@@ -27,8 +27,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.QrCodeScanner
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -54,7 +52,7 @@ import com.example.smartvolt.model.domain.TipoMarca
 import com.example.smartvolt.ui.components.asistencia.TarjetaMarcaje
 import com.example.smartvolt.ui.components.conexion.EstadoConexionCard
 import com.example.smartvolt.ui.components.conexion.FaenaActualCard
-import com.example.smartvolt.ui.components.encabezados.Header
+import com.example.smartvolt.ui.components.HeaderSmartVolt
 import com.example.smartvolt.ui.components.encabezados.TituloSeccion
 import com.example.smartvolt.ui.components.marcaje.PantallaEscanerQr
 import com.example.smartvolt.ui.components.marcaje.ValidacionMarcajeDialog
@@ -73,7 +71,8 @@ import java.util.Locale
 @Composable
 fun MarcajeView(
     nombreFaena: String = "Obra frente 2",
-    viewModel: MarcajeViewModel = viewModel()
+    viewModel: MarcajeViewModel = viewModel(),
+    onPerfilClick: () -> Unit = {}
 ) {
     val marcas by viewModel.marcas.collectAsState()
     val paso by viewModel.paso.collectAsState()
@@ -211,7 +210,8 @@ fun MarcajeView(
         onCamaraClick = {
             if (!camaraLista) lanzadorPermisoCamara.launch(Manifest.permission.CAMERA)
         },
-        ubicacion = ubicacion
+        ubicacion = ubicacion,
+        onPerfilClick = onPerfilClick
     )
 
     ValidacionMarcajeDialog(
@@ -256,7 +256,8 @@ fun MarcajeContent(
     onBluetoothClick: () -> Unit = {},
     onGpsClick: () -> Unit = {},
     onCamaraClick: () -> Unit = {},
-    ubicacion: LecturaUbicacion? = null
+    ubicacion: LecturaUbicacion? = null,
+    onPerfilClick: () -> Unit = {}
 ) {
     val sinConexion = !estaConectado
     val tituloBase = textoParaTipoMarca(tipoMarca)
@@ -267,24 +268,23 @@ fun MarcajeContent(
             .fillMaxSize()
             .background(FondoPrincipal)
     ) {
-        // Zona azul: conexión + faena
+        // Encabezado y faena
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(AzulRey)
                 .statusBarsPadding()
-                .padding(horizontal = 16.dp)
                 .padding(top = 16.dp, bottom = 20.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Header(
-                fecha = fechaHeader(),
-                onClickNotificaciones = onEscanearQr,
-                iconoAccion = Icons.Outlined.QrCodeScanner,
-                descripcionAccion = "Escanear QR",
-                textoAccion = "Escanear QR"
+            HeaderSmartVolt(
+                onPerfilClick = onPerfilClick,
+                onQrClick = onEscanearQr
             )
-            FaenaActualCard(nombreFaena = nombreFaena)
+            FaenaActualCard(
+                nombreFaena = nombreFaena,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
         }
 
         // Contenido
@@ -403,10 +403,6 @@ private fun horaActual(): String =
 
 private fun fechaActual(): String =
     SimpleDateFormat("d 'de' MMMM", Locale("es")).format(Date())
-
-private fun fechaHeader(): String =
-    SimpleDateFormat("EEEE d 'de' MMMM", Locale("es")).format(Date())
-        .replaceFirstChar { it.uppercase() }
 
 private fun siguienteTipoMarca(ultimaMarca: TipoMarca?): TipoMarca = when (ultimaMarca) {
     TipoMarca.ENTRADA -> TipoMarca.ENTRADA_COLACION

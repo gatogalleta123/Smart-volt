@@ -78,6 +78,11 @@ fun MainContainerView() {
                         subNavController.navigate(Destinos.EscanerQr.ruta) {
                             launchSingleTop = true
                         }
+                    },
+                    onPerfilClick = {
+                        subNavController.navigate(Destinos.Inferior.Perfil.ruta) {
+                            launchSingleTop = true
+                        }
                     }
                 )
             }
@@ -87,12 +92,25 @@ fun MainContainerView() {
                         subNavController.navigate(Destinos.EscanerQr.ruta) {
                             launchSingleTop = true
                         }
+                    },
+                    onPerfilClick = {
+                        subNavController.navigate(Destinos.Inferior.Perfil.ruta) {
+                            launchSingleTop = true
+                        }
                     }
                 )
             }
-            composable(Destinos.Inferior.Marcaje.ruta) { MarcajeView() }
+            composable(Destinos.Inferior.Marcaje.ruta) {
+                MarcajeView(
+                    onPerfilClick = {
+                        subNavController.navigate(Destinos.Inferior.Perfil.ruta) {
+                            launchSingleTop = true
+                        }
+                    }
+                )
+            }
             composable(Destinos.Inferior.Perfil.ruta) {
-                PerfilView(
+                PerfilTrabajadorView(
                     onEscanearQr = {
                         subNavController.navigate(Destinos.EscanerQr.ruta) {
                             launchSingleTop = true

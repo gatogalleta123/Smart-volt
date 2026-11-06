@@ -46,13 +46,13 @@ import com.example.smartvolt.ui.components.asistencia.MarcaAsistenciaCard
 import com.example.smartvolt.ui.components.asistencia.ResumenAsistenciaAzulCard
 import com.example.smartvolt.ui.components.asistencia.ResumenAsistenciasMesCard
 import com.example.smartvolt.ui.components.calendario.CalendarioAsistenciaDialog
-import com.example.smartvolt.ui.components.encabezados.Header
+import com.example.smartvolt.ui.components.HeaderSmartVolt
 import com.example.smartvolt.ui.components.encabezados.TituloSeccion
 import com.example.smartvolt.ui.theme.AzulElectrico
+import com.example.smartvolt.ui.theme.AzulRey
 import com.example.smartvolt.ui.components.horasextra.HorasExtraMesCard
 import com.example.smartvolt.ui.theme.AmarilloPrincipal
 import com.example.smartvolt.ui.theme.AzulIntermedio
-import com.example.smartvolt.ui.theme.AzulRey
 import com.example.smartvolt.ui.theme.FondoPrincipal
 import com.example.smartvolt.ui.theme.SmartVoltTheme
 import com.example.smartvolt.ui.theme.TextoPrincipal
@@ -70,7 +70,8 @@ import java.util.Locale
 @Composable
 fun AsistenciaView(
     onEscanearQr: () -> Unit = {},
-    viewModel: AsistenciaViewModel = viewModel()
+    viewModel: AsistenciaViewModel = viewModel(),
+    onPerfilClick: () -> Unit = {}
 ) {
     val marcasDelMes by viewModel.marcasDelMes.collectAsState()
     val marcasGuardadas by viewModel.marcasGuardadas.collectAsState()
@@ -83,7 +84,8 @@ fun AsistenciaView(
         asistenciasDelMes = asistenciasDelMes,
         sincronizando = sincronizando,
         onSincronizar = { viewModel.sincronizar() },
-        onEscanearQr = onEscanearQr
+        onEscanearQr = onEscanearQr,
+        onPerfilClick = onPerfilClick
     )
 }
 
@@ -106,7 +108,8 @@ fun AsistenciaContent(
     onEscanearQr: () -> Unit = {},
     jornadasHorasExtra: List<JornadaHorasExtra> = jornadasEjemplo,
     onVerCalendario: () -> Unit = {},
-    onCambiarPeriodo: () -> Unit = {}
+    onCambiarPeriodo: () -> Unit = {},
+    onPerfilClick: () -> Unit = {}
 ) {
     var mostrarCalendario by remember { mutableStateOf(false) }
     var mostrarDetalle by remember { mutableStateOf(false) }
@@ -129,7 +132,7 @@ fun AsistenciaContent(
             .fillMaxSize()
             .background(FondoPrincipal)
     ) {
-        // Zona azul: mismo Header de las demás pantallas
+        // Encabezado
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -137,7 +140,10 @@ fun AsistenciaContent(
                 .statusBarsPadding()
                 .padding(bottom = 16.dp)
         ) {
-            Header(onClickNotificaciones = onEscanearQr)
+            HeaderSmartVolt(
+                onPerfilClick = onPerfilClick,
+                onQrClick = onEscanearQr
+            )
         }
 
         // Contenido

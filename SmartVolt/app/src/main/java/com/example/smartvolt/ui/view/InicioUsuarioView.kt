@@ -21,7 +21,7 @@ import com.example.smartvolt.ui.components.avisos.AvisosCard
 import com.example.smartvolt.ui.components.botones.BotonRegistrarAsistencia
 import com.example.smartvolt.ui.components.asistencia.EstadoAsistencia
 import com.example.smartvolt.ui.components.asistencia.EstadoAsistenciaCard
-import com.example.smartvolt.ui.components.encabezados.Header
+import com.example.smartvolt.ui.components.HeaderSmartVolt
 import com.example.smartvolt.ui.components.encabezados.TituloSeccion
 import com.example.smartvolt.ui.theme.AzulRey
 import com.example.smartvolt.ui.theme.FondoPrincipal
@@ -35,7 +35,8 @@ import java.util.Locale
 fun InicioUsuarioView(
     onMarcarAsistencia: () -> Unit = {},
     onEscanearQr: () -> Unit = {},
-    viewModel: AsistenciaViewModel = viewModel()
+    viewModel: AsistenciaViewModel = viewModel(),
+    onPerfilClick: () -> Unit = {}
 ) {
     val marcas by viewModel.marcasDelMes.collectAsState()
     val marcaActual = marcas.firstOrNull { it.fecha == fechaActual() }
@@ -50,7 +51,7 @@ fun InicioUsuarioView(
             .fillMaxSize()
             .background(FondoPrincipal)
     ) {
-        // Zona azul: Header + botón Asistencia
+        // Header y acción principal
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -58,7 +59,10 @@ fun InicioUsuarioView(
                 .statusBarsPadding()
                 .padding(bottom = 24.dp)
         ) {
-            Header(onClickNotificaciones = onEscanearQr)
+            HeaderSmartVolt(
+                onPerfilClick = onPerfilClick,
+                onQrClick = onEscanearQr
+            )
             BotonRegistrarAsistencia(
                 texto = "Marcar",
                 onClick = onMarcarAsistencia,
