@@ -1,8 +1,16 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp) // agregar
     alias(libs.plugins.room) // aplicar aquí el alias del plugin
+}
+
+// Lee local.properties (no se sube a Git) para obtener el token de Mapbox
+val localProps = Properties().apply {
+    val archivo = rootProject.file("local.properties")
+    if (archivo.exists()) archivo.inputStream().use { load(it) }
 }
 
 android {
@@ -23,6 +31,13 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Token público de Mapbox (pk.) disponible como BuildConfig.MAPBOX_TOKEN
+        buildConfigField(
+            "String",
+            "MAPBOX_TOKEN",
+            "\"${localProps.getProperty("MAPBOX_TOKEN", "")}\""
+        )
     }
 
     buildTypes {
@@ -40,6 +55,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 

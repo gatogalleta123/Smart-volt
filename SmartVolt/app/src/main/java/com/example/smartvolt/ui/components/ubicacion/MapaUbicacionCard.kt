@@ -14,16 +14,36 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import com.example.smartvolt.BuildConfig
+import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase
 import org.osmdroid.util.GeoPoint
+import org.osmdroid.util.MapTileIndex
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.CopyrightOverlay
 import org.osmdroid.views.overlay.Marker
 
 /**
- * Muestra la posición del dispositivo sobre un mapa OpenStreetMap.
- * Requiere conexión para descargar los mosaicos que aún no estén en caché.
+ * Mosaicos de Mapbox (Static Tiles API). Cambia "streets-v12" por otro estilo si quieres:
+ * "light-v11" (claro y sobrio), "outdoors-v12" o "satellite-streets-v12".
  */
+private val TilesMapbox = object : OnlineTileSourceBase(
+    "MapboxStreets",
+    0,
+    22,
+    256,
+    "",
+    arrayOf("https://api.mapbox.com/styles/v1/mapbox/streets-v12/tiles/256/"),
+    "© Mapbox © OpenStreetMap contributors"
+) {
+    // Mapbox usa el orden z/x/y
+    override fun getTileURLString(pMapTileIndex: Long): String =
+        baseUrl +
+                MapTileIndex.getZoom(pMapTileIndex) + "/" +
+                MapTileIndex.getX(pMapTileIndex) + "/" +
+                MapTileIndex.getY(pMapTileIndex) +
+                "?access_token=" + BuildConfig.MAPBOX_TOKEN
+}
+
 @Composable
 fun MapaUbicacionCard(
     latitud: Double,
@@ -35,9 +55,10 @@ fun MapaUbicacionCard(
 
     val mapa = remember {
         MapView(contexto).apply {
-            setTileSource(TileSourceFactory.OpenTopo)
+            setTileSource(TilesMapbox)
             setMultiTouchControls(true)
-            controller.setZoom(17.0)
+            isTilesScaledToDpi = true   // evita que las etiquetas se vean diminutas
+            controller.setZoom(18.0)
         }
     }
 
@@ -70,7 +91,7 @@ fun MapaUbicacionCard(
                     title = "Tu ubicación"
                 }
             )
-            // Atribución obligatoria: "© OpenStreetMap contributors"
+            // Atribución obligatoria de Mapbox y OpenStreetMap
             vista.overlays.add(CopyrightOverlay(contexto))
             vista.invalidate()
         },
