@@ -51,11 +51,13 @@ import com.example.smartvolt.ui.components.encabezados.TituloSeccion
 import com.example.smartvolt.ui.theme.AzulElectrico
 import com.example.smartvolt.ui.components.horasextra.HorasExtraMesCard
 import com.example.smartvolt.ui.theme.AmarilloPrincipal
+import com.example.smartvolt.ui.theme.AzulIntermedio
 import com.example.smartvolt.ui.theme.AzulRey
 import com.example.smartvolt.ui.theme.FondoPrincipal
 import com.example.smartvolt.ui.theme.SmartVoltTheme
 import com.example.smartvolt.ui.theme.TextoPrincipal
 import com.example.smartvolt.ui.theme.TextoSobreAmarillo
+import com.example.smartvolt.ui.theme.TextoSobreAzul
 import com.example.smartvolt.viewmodel.AsistenciaViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -168,8 +170,8 @@ fun AsistenciaContent(
                     shape = RoundedCornerShape(8.dp),
                     contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = AmarilloPrincipal,
-                        contentColor = TextoSobreAmarillo
+                        containerColor = AzulIntermedio,
+                        contentColor = TextoSobreAzul
                     )
                 ) {
                     Icon(
