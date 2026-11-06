@@ -14,5 +14,6 @@ class SmartVoltApp : Application() {
             "SmartVolt/1.0 (https://github.com/gatogalleta123/Smart-volt; Android)"
         config.osmdroidBasePath = cacheDir        // caché de tiles
         config.osmdroidTileCache = cacheDir.resolve("tiles")
+
     }
 }

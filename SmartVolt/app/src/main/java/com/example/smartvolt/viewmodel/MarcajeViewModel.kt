@@ -155,7 +155,6 @@ class MarcajeViewModel(application: Application) : AndroidViewModel(application)
     }
 
     // SIMULACIÓN PARA PRUEBAS: espera 1,5 s y responde OK.
-    // TODO: reemplazar por la llamada real a tu API (Retrofit, etc.).
     private suspend fun enviarAlServidor(marca: RegistroMarca): Boolean {
         delay(1500)
         return true

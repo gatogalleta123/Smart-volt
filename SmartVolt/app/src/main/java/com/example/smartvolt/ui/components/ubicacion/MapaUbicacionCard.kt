@@ -22,7 +22,7 @@ import org.osmdroid.views.overlay.Marker
 
 /**
  * Muestra la posición del dispositivo sobre un mapa OpenStreetMap.
- * Requiere conexión para descargar los tiles del mapa.
+ * Requiere conexión para descargar los mosaicos que aún no estén en caché.
  */
 @Composable
 fun MapaUbicacionCard(
@@ -35,10 +35,9 @@ fun MapaUbicacionCard(
 
     val mapa = remember {
         MapView(contexto).apply {
-            setTileSource(TileSourceFactory.MAPNIK)
+            setTileSource(TileSourceFactory.OpenTopo)
             setMultiTouchControls(true)
             controller.setZoom(17.0)
-            overlays.add(CopyrightOverlay(contexto))  // "© OpenStreetMap contributors"
         }
     }
 
@@ -71,9 +70,8 @@ fun MapaUbicacionCard(
                     title = "Tu ubicación"
                 }
             )
-            vista.overlays.add(
-                CopyrightOverlay(contexto)
-            )
+            // Atribución obligatoria: "© OpenStreetMap contributors"
+            vista.overlays.add(CopyrightOverlay(contexto))
             vista.invalidate()
         },
         modifier = modifier
