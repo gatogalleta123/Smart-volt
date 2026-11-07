@@ -1,6 +1,7 @@
 package com.example.smartvolt.ui.view
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -35,18 +37,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
+import com.example.smartvolt.R
 import com.example.smartvolt.model.navigation.Destinos
 import com.example.smartvolt.ui.theme.AmarilloPrincipal
 import com.example.smartvolt.ui.theme.AzulCorporativo
@@ -164,14 +166,13 @@ fun LoginView(navController: NavController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Logo SMART (blanco) + VOLT (amarillo)
-        Text(
-            text = buildAnnotatedString {
-                withStyle(SpanStyle(color = TextoSobreAzul)) { append("SMART") }
-                withStyle(SpanStyle(color = AmarilloPrincipal)) { append("VOLT") }
-            },
-            fontWeight = FontWeight.ExtraBold,
-            fontSize = 40.sp
+        Image(
+            painter = painterResource(R.drawable.smartvoltlogo5),
+            contentDescription = "Logo de SmartVolt",
+            contentScale = ContentScale.Fit,
+            modifier = Modifier
+                .width(280.dp)
+                .height(76.dp)
         )
         Spacer(modifier = Modifier.height(40.dp))
 

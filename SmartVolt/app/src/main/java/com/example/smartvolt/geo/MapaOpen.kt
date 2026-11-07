@@ -18,26 +18,26 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun MapaOpen(){
+fun MapaOpen() {
     val locationPermission = rememberPermissionState(
         permission = android.Manifest.permission.ACCESS_FINE_LOCATION
     )
-    Box(modifier = Modifier.fillMaxSize().padding(15.dp)){
+    Box(modifier = Modifier.fillMaxSize().padding(15.dp)) {
         Text(text = "Para mostrar el mapa necesitamos de su permiso")
-        Button(onClick = {locationPermission.launchPermissionRequest()}) {
+        Button(onClick = { locationPermission.launchPermissionRequest() }) {
             Text(text = "Pínchame")
         }
     }
 }
 
 @Composable
-fun osm_mapa(){
+fun osm_mapa() {
     val contexto = LocalContext.current
 
     val mapaView = remember { MapView(contexto) }
     val myLocation = remember {
         val provider = GpsMyLocationProvider(contexto)
-        MyLocationNewOverlay(provider, mapaView).apply{
+        MyLocationNewOverlay(provider, mapaView).apply {
             enableFollowLocation()
             isDrawAccuracyEnabled = true
         }
