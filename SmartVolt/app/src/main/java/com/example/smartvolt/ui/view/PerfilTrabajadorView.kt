@@ -37,7 +37,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.smartvolt.model.domain.DatosTrabajador
 import com.example.smartvolt.model.domain.DiaSemana
-import com.example.smartvolt.ui.components.HeaderSmartVolt
+import com.example.smartvolt.ui.components.encabezados.HeaderSmartVolt
 import com.example.smartvolt.ui.components.perfil.AvatarPerfil
 import com.example.smartvolt.ui.components.perfil.BadgeAvisoFoto
 import com.example.smartvolt.ui.theme.AzulCorporativo

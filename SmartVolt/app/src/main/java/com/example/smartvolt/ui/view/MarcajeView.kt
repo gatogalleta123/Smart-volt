@@ -28,6 +28,8 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -52,7 +54,7 @@ import com.example.smartvolt.model.domain.TipoMarca
 import com.example.smartvolt.ui.components.asistencia.TarjetaMarcaje
 import com.example.smartvolt.ui.components.conexion.EstadoConexionCard
 import com.example.smartvolt.ui.components.conexion.FaenaActualCard
-import com.example.smartvolt.ui.components.HeaderSmartVolt
+import com.example.smartvolt.ui.components.encabezados.HeaderSmartVolt
 import com.example.smartvolt.ui.components.encabezados.TituloSeccion
 import com.example.smartvolt.ui.components.marcaje.PantallaEscanerQr
 import com.example.smartvolt.ui.components.marcaje.ValidacionMarcajeDialog
@@ -322,7 +324,10 @@ fun MarcajeContent(
 
             val latitud = ubicacion?.latitud
             val longitud = ubicacion?.longitud
-            TituloSeccion(texto = "Tu ubicación")
+            TituloSeccion(
+                texto = "Tu ubicación",
+                icono = Icons.Filled.LocationOn
+            )
             if (latitud != null && longitud != null) {
                 MapaUbicacionCard(latitud = latitud, longitud = longitud)
             } else {

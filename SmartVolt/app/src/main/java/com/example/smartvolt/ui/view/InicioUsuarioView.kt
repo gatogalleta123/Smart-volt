@@ -21,7 +21,7 @@ import com.example.smartvolt.ui.components.avisos.AvisosCard
 import com.example.smartvolt.ui.components.botones.BotonRegistrarAsistencia
 import com.example.smartvolt.ui.components.asistencia.EstadoAsistencia
 import com.example.smartvolt.ui.components.asistencia.EstadoAsistenciaCard
-import com.example.smartvolt.ui.components.HeaderSmartVolt
+import com.example.smartvolt.ui.components.encabezados.HeaderSmartVolt
 import com.example.smartvolt.ui.components.encabezados.TituloSeccion
 import com.example.smartvolt.ui.theme.AzulRey
 import com.example.smartvolt.ui.theme.FondoPrincipal
