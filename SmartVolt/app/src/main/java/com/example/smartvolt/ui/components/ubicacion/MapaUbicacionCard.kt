@@ -33,15 +33,16 @@ private val TilesMapbox = object : OnlineTileSourceBase(
     256,
     "",
     arrayOf("https://api.mapbox.com/styles/v1/mapbox/streets-v12/tiles/256/"),
-    "© Mapbox © OpenStreetMap contributors"
+    "© Mapbox contributors"
 ) {
+    val MAPBOX_TOKEN = "pk.eyJ1IjoiZnJlZGNhbXBvczEyMzAiLCJhIjoiY2xudnZkenhsMDJudzJ2cGkzeWlpZzZkZiJ9.DN3C0WAveSEGjCHr2eJ_kA";
     // Mapbox usa el orden z/x/y
     override fun getTileURLString(pMapTileIndex: Long): String =
         baseUrl +
                 MapTileIndex.getZoom(pMapTileIndex) + "/" +
                 MapTileIndex.getX(pMapTileIndex) + "/" +
                 MapTileIndex.getY(pMapTileIndex) +
-                "?access_token=" + BuildConfig.MAPBOX_TOKEN
+                "?access_token=" + MAPBOX_TOKEN
 }
 
 @Composable
